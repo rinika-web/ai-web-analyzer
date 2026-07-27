@@ -145,8 +145,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="FCP"
-                                value={scores.details.fcp.value}
-                                status={scores.details.fcp.status}
+                                value={scores.details.metrics.webVitals.fcp.value}
+                                status={scores.details.metrics.webVitals.fcp.status}
                             />
 
                         </div>
@@ -158,8 +158,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="LCP"
-                                value={scores.details.lcp.value}
-                                status={scores.details.lcp.status}
+                                value={scores.details.metrics.webVitals.lcp.value}
+                                status={scores.details.metrics.webVitals.lcp.status}
                             />
                         </div>
                         <div className="
@@ -170,8 +170,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="CLS"
-                                value={scores.details.cls.value}
-                                status={scores.details.cls.status}
+                                value={scores.details.metrics.webVitals.cls.value}
+                                status={scores.details.metrics.webVitals.cls.status}
                             />
                         </div>
 
@@ -183,8 +183,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="Speed Index"
-                                value={scores.details.speedIndex.value}
-                                status={scores.details.speedIndex.status}
+                                value={scores.details.metrics.performance.speedIndex.value}
+                                status={scores.details.metrics.performance.speedIndex.status}
                             />
                         </div>
 
@@ -196,8 +196,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="TBT"
-                                value={scores.details.tbt.value}
-                                status={scores.details.tbt.status}
+                                value={scores.details.metrics.performance.tbt.value}
+                                status={scores.details.metrics.performance.tbt.status}
                             />
                         </div>
 
@@ -209,8 +209,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="TTI"
-                                value={scores.details.tti.value}
-                                status={scores.details.tti.status}
+                                value={scores.details.metrics.performance.tti.value}
+                                status={scores.details.metrics.performance.tti.status}
                             />
                             </div>
                             <div className="
@@ -221,8 +221,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="TTFB"
-                                value={scores.details.ttfb.value}
-                                status={scores.details.ttfb.status}
+                                value={scores.details.metrics.performance.ttfb.value}
+                                status={scores.details.metrics.performance.ttfb.status}
                             />
                         </div>
                              <div className="
@@ -233,8 +233,8 @@ const Score = () => {
                         >
                             <MetricCard
                                 title="Total Byte Weight"
-                                value={scores.details.totalByteWeight.value}
-                                status={scores.details.totalByteWeight.status}
+                                value={scores.details.metrics.performance.totalByteWeight.value}
+                                status={scores.details.metrics.performance.totalByteWeight.status}
                             />
                         </div>
                         
@@ -242,43 +242,43 @@ const Score = () => {
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">DOM Size</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.domSize}
+                                {scores.details.metrics.diagnostics.domSize}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Network Requests</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.networkRequests}
+                                {scores.details.metrics.diagnostics.networkRequests}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Render Blocking</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.renderBlocking}
+                                {scores.details.metrics.diagnostics.renderBlocking}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Unused CSS</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.unusedCSS}
+                                {scores.details.metrics.diagnostics.unusedCSS}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Unused JavaScript</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.unusedJS}
+                                {scores.details.metrics.diagnostics.unusedJS}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Oversized Images</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.oversizedImages}
+                                {scores.details.metrics.diagnostics.oversizedImages}
                             </h3>
                         </div>
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">Cache</p>
                             <h3 className="text-3xl font-bold mt-2">
-                                {scores.details.cache}
+                                {scores.details.metrics.diagnostics.cache}
                             </h3>
                         </div>
 
