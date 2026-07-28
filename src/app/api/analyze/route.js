@@ -9,6 +9,8 @@ import { getSeoData } from "@/lib/analyzer/seo"
 import { getLinks } from "@/lib/analyzer/links"
 import { getIssues } from "@/lib/analyzer/issues"
 import { getRecommendations } from "@/lib/analyzer/recommendations"
+import { takeScreenshot } from "@/lib/analyzer/screenshot"
+import { getSummary } from "@/lib/analyzer/summary"
 
 export async function POST(req) {
     let browser
@@ -50,17 +52,12 @@ export async function POST(req) {
 
         const title = await page.title()
 
-        // Screenshot
-        const fileName = `website-${Date.now()}.png`
-
-        await page.screenshot({
-            path: `public/${fileName}`,
-            fullPage: false
-        })
+       const screenshot = await takeScreenshot(page)
 
         const loadTime = Date.now() - start
 
         // Analyzer modules
+       
         const scores = getScores(lighthouse.categories)
 
         const metrics = getMetrics(lighthouse.audits)
@@ -69,25 +66,17 @@ export async function POST(req) {
 
         const links = getLinks($)
 
-        // Count missing ALT text
-        let missingAltCount = 0
-
-        $("img").each((_, img) => {
-
-            if (!$(img).attr("alt")) {
-                missingAltCount++
-            }
-
-        })
-
         const issues = getIssues({
             ...seo,
-            missingAltCount
         })
 
         const recommendations =
             getRecommendations(lighthouse.audits)
-
+ const summary = getSummary({
+    scores,
+    issues,
+    recommendations
+})
         // Response
         return Response.json({
 
@@ -116,12 +105,13 @@ export async function POST(req) {
                 links
 
             },
+            summary,
 
             recommendations,
 
             issues,
 
-            screenshot: `/${fileName}`
+             screenshot
 
         })
 

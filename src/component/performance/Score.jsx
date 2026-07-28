@@ -5,9 +5,10 @@ import { useSearchParams } from "next/navigation"
 import ScoreCard from "./ScoreCard"
 import ScreenshotPreview from "./ScreenshotPreview"
 import IssueList from "./IssueList"
-import Recommendations from "./Recommendations";
+import RecommendationList from "./recommendations/RecommendationList";
 import OverallSummary from './OverallSummary'
 import MetricCard from './MetricCard'
+import SummaryCard from "./SummaryCard"
 
 const Score = () => {
     const [scores, setScores] = useState(null)
@@ -100,8 +101,16 @@ const Score = () => {
                         {url}
                     </p>
                 </div>
+                <div className="mt-10">
+                    <SummaryCard
+                        summary={scores.summary}
+                    />
+                </div>
+                <div className="mt-10">
 
-                <OverallSummary overall={scores?.overall} />
+                    <OverallSummary overall={scores?.overall} />
+
+                </div>
 
                 {/* Score Cards */}
 
@@ -175,7 +184,7 @@ const Score = () => {
                             />
                         </div>
 
-                         <div className="
+                        <div className="
                         bg-zinc-900 border-zinc-800
                         hover:border-zinc-600 
                         border transition rounded-xl 
@@ -212,8 +221,8 @@ const Score = () => {
                                 value={scores.details.metrics.performance.tti.value}
                                 status={scores.details.metrics.performance.tti.status}
                             />
-                            </div>
-                            <div className="
+                        </div>
+                        <div className="
                         bg-zinc-900 border-zinc-800
                         hover:border-zinc-600 
                         border transition rounded-xl 
@@ -225,7 +234,7 @@ const Score = () => {
                                 status={scores.details.metrics.performance.ttfb.status}
                             />
                         </div>
-                             <div className="
+                        <div className="
                         bg-zinc-900 border-zinc-800
                         hover:border-zinc-600 
                         border transition rounded-xl 
@@ -237,8 +246,8 @@ const Score = () => {
                                 status={scores.details.metrics.performance.totalByteWeight.status}
                             />
                         </div>
-                        
-                        
+
+
                         <div className="bg-zinc-900 rounded-xl p-5">
                             <p className="text-zinc-400">DOM Size</p>
                             <h3 className="text-3xl font-bold mt-2">
@@ -313,7 +322,7 @@ const Score = () => {
                         Performance Recommendations
                     </h2>
 
-                    <Recommendations
+                    <RecommendationList
                         recommendations={scores.recommendations}
                     />
                 </div>
