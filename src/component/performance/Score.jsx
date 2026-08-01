@@ -101,11 +101,27 @@ const Score = () => {
                         {url}
                     </p>
                 </div>
+
+{/* Screenshot */}
+                {scores?.screenshot && (
+                    <div className="mt-12">
+                        <h2 className="text-3xl font-semibold mb-5">
+                            Website Screenshot
+                        </h2>
+
+                        <ScreenshotPreview
+                            screenshot={scores.screenshot}
+                        />
+                    </div>
+                )}
+
                 <div className="mt-10">
                     <SummaryCard
                         summary={scores.summary}
                     />
                 </div>
+               
+                
                 <div className="mt-10">
 
                     <OverallSummary overall={scores?.overall} />
@@ -297,7 +313,7 @@ const Score = () => {
 
                     </div>
                 </div>
-                {/* Screenshot */}
+                {/* Screenshot 
                 {scores?.screenshot && (
                     <div className="mt-12">
                         <h2 className="text-3xl font-semibold mb-5">
@@ -308,7 +324,7 @@ const Score = () => {
                             screenshot={scores.screenshot}
                         />
                     </div>
-                )}
+                )}*/}
 
                 {/* Issues */}
                 <div className="mt-12">

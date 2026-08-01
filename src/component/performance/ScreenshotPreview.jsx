@@ -9,6 +9,7 @@ export default function ScreenshotPreview({ screenshot }) {
       max-w-5xl
       mx-auto
     ">
+        
 
       <Image
         src={screenshot}

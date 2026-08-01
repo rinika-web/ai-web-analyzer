@@ -11,6 +11,7 @@ import { getIssues } from "@/lib/analyzer/issues"
 import { getRecommendations } from "@/lib/analyzer/recommendations"
 import { takeScreenshot } from "@/lib/analyzer/screenshot"
 import { getSummary } from "@/lib/analyzer/summary"
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req) {
     let browser
@@ -77,6 +78,77 @@ export async function POST(req) {
     issues,
     recommendations
 })
+
+
+const analysis = await prisma.analysis.create({
+    data: {
+
+        url,
+
+        screenshot,
+
+        overallScore: scores.overall.score,
+
+        seoScore: scores.seo.score,
+
+        performanceScore: scores.performance.score,
+
+        accessibilityScore: scores.accessibility.score,
+
+        bestPracticesScore: scores.bestPractices.score,
+
+
+        grade: scores.overall.grade,
+
+        health: scores.overall.health,
+
+
+        userId: 1
+
+    }
+})
+
+await prisma.issue.createMany({
+
+    data: issues.map((issue)=>({
+
+        category: issue.category,
+
+        severity: issue.severity,
+
+        message: issue.message,
+
+        analysisId: analysis.id
+
+    }))
+
+})
+
+await prisma.recommendation.createMany({
+
+    data: recommendations.map((rec)=>({
+
+        title: rec.title,
+
+        description: rec.description,
+
+        score: rec.score,
+
+        displayValue: rec.displayValue,
+
+        savingsMs: rec.savingsMs,
+
+        savingsBytes: rec.savingsBytes,
+
+        learnMore: rec.learnMore,
+
+        analysisId: analysis.id
+
+    }))
+
+})
+
+
         // Response
         return Response.json({
 
