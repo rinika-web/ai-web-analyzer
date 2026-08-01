@@ -12,12 +12,34 @@ import { getRecommendations } from "@/lib/analyzer/recommendations"
 import { takeScreenshot } from "@/lib/analyzer/screenshot"
 import { getSummary } from "@/lib/analyzer/summary"
 import { prisma } from "@/lib/prisma";
+import { verifyToken } from "@/lib/auth";
 
 export async function POST(req) {
     let browser
 
     try {
+const authHeader = req.headers.get("authorization");
+if (!authHeader) {
+    return Response.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+    );
+}
+if (!authHeader.startsWith("Bearer ")) {
+    return Response.json(
+        { error: "Invalid authorization format" },
+        { status: 401 }
+    );
+}
 
+const token = authHeader.split(" ")[1];
+const user = verifyToken(token);
+if (!user) {
+    return Response.json(
+        { error: "Invalid token" },
+        { status: 401 }
+    );
+}
         // Validate URL
         const { url } = await req.json()
         new URL(url)
@@ -103,7 +125,7 @@ const analysis = await prisma.analysis.create({
         health: scores.overall.health,
 
 
-        userId: 1
+        userId: user.userId
 
     }
 })

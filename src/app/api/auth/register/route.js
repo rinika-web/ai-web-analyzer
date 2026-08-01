@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 
 export async function POST(req){
@@ -45,10 +46,21 @@ export async function POST(req){
 
         })
 
+        const token = jwt.sign(
+    {
+        id:user.id,
+        email:user.email
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn:"7d"
+    }
+)
+
 
         return Response.json({
             message:"User created",
-            userId:user.id
+            token
         })
 
 
