@@ -266,43 +266,57 @@ const Score = () => {
                         </div>
 
 
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">DOM Size</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.domSize}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Network Requests</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.networkRequests}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Render Blocking</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.renderBlocking}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Unused CSS</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.unusedCSS}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Unused JavaScript</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.unusedJS}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Oversized Images</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.oversizedImages}
                             </h3>
                         </div>
-                        <div className="bg-zinc-900 rounded-xl p-5">
+                        <div className="bg-zinc-900 border-zinc-800
+                        hover:border-zinc-600 
+                        border transition rounded-xl p-5">
                             <p className="text-zinc-400">Cache</p>
                             <h3 className="text-3xl font-bold mt-2">
                                 {scores.details.metrics.diagnostics.cache}
