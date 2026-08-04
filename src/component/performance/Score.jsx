@@ -22,11 +22,12 @@ const Score = () => {
     useEffect(() => {
         async function analyzeWebsite() {
             try {
+                const token = localStorage.getItem("token");
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                         Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
                     body: JSON.stringify({ url }),
                 })
@@ -103,7 +104,7 @@ const Score = () => {
                     </p>
                 </div>
 
-{/* Screenshot */}
+                {/* Screenshot */}
                 {scores?.screenshot && (
                     <div className="mt-12">
                         <h2 className="text-3xl font-semibold mb-5">
@@ -121,8 +122,8 @@ const Score = () => {
                         summary={scores.summary}
                     />
                 </div>
-               
-                
+
+
                 <div className="mt-10">
 
                     <OverallSummary overall={scores?.overall} />
