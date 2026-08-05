@@ -10,52 +10,52 @@ export default function HistoryPage() {
 
     const [history, setHistory] = useState([])
     const [loading, setLoading] = useState(true)
-async function deleteAnalysis(id){
+    async function deleteAnalysis(id) {
 
-    const token =
-    localStorage.getItem("token");
-if (!confirm("Are you sure you want to delete this analysis?")) {
-        return;
-    }
+        const token =
+            localStorage.getItem("token");
+        if (!confirm("Are you sure you want to delete this analysis?")) {
+            return;
+        }
 
-    const response =
-    await fetch(
+        const response =
+            await fetch(
 
-        `/api/history/${id}`,
+                `/api/history/${id}`,
 
-        {
+                {
 
-            method:"DELETE",
+                    method: "DELETE",
 
-            headers:{
-                Authorization:
-                `Bearer ${token}`
-            }
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+
+                }
+
+            );
+
+
+        if (response.ok) {
+
+            setHistory(
+
+                history.filter(
+
+                    (item) => item.id !== id
+
+                )
+
+
+
+            );
+
+            alert("Analysis deleted successfully!");
 
         }
 
-    );
-
-
-    if(response.ok){
-
-        setHistory(
-
-            history.filter(
-
-                (item)=>item.id !== id
-
-            )
-            
-
-
-        );
-
-        alert("Analysis deleted successfully!");
-
     }
-
-}
 
 
     useEffect(() => {
@@ -158,12 +158,7 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
                     (
 
-                        <div className="
-            bg-gray-900
-            rounded-xl
-            p-10
-            text-center
-            ">
+                        <div className="bg-gray-900 rounded-xl p-10 text-center">
 
                             <h2 className="text-xl">
 
@@ -182,12 +177,7 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
                     (
 
-                        <div className="
-        grid
-        md:grid-cols-2
-        lg:grid-cols-3
-        gap-6
-        ">
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
 
                             {
@@ -197,16 +187,7 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
                                     <div
                                         key={item.id}
-                                        className="
-                bg-gray-900
-                border
-                border-gray-800
-                rounded-2xl
-                p-6
-                shadow-xl
-                hover:border-blue-500
-                transition
-                "
+                                        className=" bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl hover:border-blue-500 transition"
                                     >
 
 
@@ -215,11 +196,7 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
 
                                         <h2
-                                            className="
-                    text-lg
-                    font-bold
-                    truncate
-                    "
+                                            className="text-lg font-bold truncate"
                                         >
 
                                             {item.url}
@@ -229,11 +206,7 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
 
 
-                                        <p className="
-                    text-gray-400
-                    text-sm
-                    mt-2
-                    ">
+                                        <p className="text-gray-400 text-sm mt-2">
 
                                             {
                                                 new Date(
@@ -251,27 +224,12 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
 
 
-                                        <div className="
-                    flex
-                    justify-between
-                    items-center
-                    mt-6
-                    ">
+                                        <div className=" flex justify-between items-center mt-6">
 
 
 
                                             <div
-                                                className="
-                        w-20
-                        h-20
-                        rounded-full
-                        bg-blue-600
-                        flex
-                        items-center
-                        justify-center
-                        text-2xl
-                        font-bold
-                        "
+                                                className="w-20 h-20 rounded-full bg-blue-600 flex items-center justify-center text-2xl font-bold"
                                             >
 
                                                 {item.overallScore}
@@ -284,21 +242,14 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
                                             <div className="text-right">
 
 
-                                                <p className="
-                            text-green-400
-                            font-semibold
-                            ">
+                                                <p className="text-green-400 font-semibold">
 
                                                     {item.health}
 
                                                 </p>
 
 
-                                                <p className="
-                            text-yellow-400
-                            font-bold
-                            mt-1
-                            ">
+                                                <p className="text-yellow-400 font-bold mt-1">
 
                                                     Grade {item.grade}
 
@@ -320,62 +271,25 @@ if (!confirm("Are you sure you want to delete this analysis?")) {
 
 
 
-                                        <div className="
-                                                        flex
-                                                        gap-3
-                                                        mt-6
-                                                        ">
-
-
+                                        <div className="flex gap-3 mt-6">
 
                                             <button
 
-                                                onClick={() => router.push(
-                                                    `/score?id=${item.id}`
-                                                )}
-
-                                                className="
-                                                                flex-1
-                                                                bg-blue-600
-                                                                hover:bg-blue-700
-                                                                py-2
-                                                                rounded-lg
-                                                                "
-
-                                            >
+                                                onClick={() => router.push(`/history/${item.id}`)}
+                                                className="flex-1 bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
 
                                                 View
 
                                             </button>
 
+                                            <button
+                                                onClick={() => deleteAnalysis(item.id)}
 
+                                                className="flex-1 bg-red-600 hover:bg-red-700 py-2 rounded-lg">
 
-
-
-                                           <button
-
-onClick={()=>deleteAnalysis(item.id)}
-
-className="
-flex-1
-bg-red-600
-hover:bg-red-700
-py-2
-rounded-lg
-"
-
->
-
-Delete
-
-</button>
-
-
-
+                                                Delete
+                                            </button>
                                         </div>
-
-
-
 
                                     </div>
 

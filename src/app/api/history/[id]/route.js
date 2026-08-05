@@ -1,6 +1,79 @@
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 
+
+
+export async function GET(req, { params }) {
+
+    try {
+
+        const authHeader = req.headers.get("authorization");
+
+        if (!authHeader) {
+            return Response.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const token = authHeader.split(" ")[1];
+
+        const user = verifyToken(token);
+
+        if (!user) {
+            return Response.json(
+                { error: "Invalid token" },
+                { status: 401 }
+            );
+        }
+
+        const { id } = await params;
+        console.log("ID from params:", id);
+
+        const analysisId = Number(id);
+        console.log("Analysis ID:", analysisId);
+
+        const analysis =
+            await prisma.analysis.findUnique({
+
+                where: {
+                    id: analysisId
+                },
+
+                include: {
+
+                    issues: true,
+
+                    recommendations: true
+
+                }
+
+            })
+
+        return Response.json({
+
+            analysis
+
+        })
+
+    } catch (error) {
+
+        return Response.json(
+            {
+                error: error.message
+            },
+            {
+                status: 500
+            }
+        );
+
+    }
+}
+
+
+
+
+
 export async function DELETE(req, { params }) {
 
     try {
@@ -25,9 +98,9 @@ export async function DELETE(req, { params }) {
             );
         }
 
-          const { id } = await params;
+        const { id } = await params;
 
-    const analysisId = Number(id); 
+        const analysisId = Number(id);
         const analysis = await prisma.analysis.findUnique({
             where: {
                 id: analysisId
