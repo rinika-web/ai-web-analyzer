@@ -10,7 +10,52 @@ export default function HistoryPage() {
 
     const [history, setHistory] = useState([])
     const [loading, setLoading] = useState(true)
+async function deleteAnalysis(id){
 
+    const token =
+    localStorage.getItem("token");
+if (!confirm("Are you sure you want to delete this analysis?")) {
+        return;
+    }
+
+    const response =
+    await fetch(
+
+        `/api/history/${id}`,
+
+        {
+
+            method:"DELETE",
+
+            headers:{
+                Authorization:
+                `Bearer ${token}`
+            }
+
+        }
+
+    );
+
+
+    if(response.ok){
+
+        setHistory(
+
+            history.filter(
+
+                (item)=>item.id !== id
+
+            )
+            
+
+
+        );
+
+        alert("Analysis deleted successfully!");
+
+    }
+
+}
 
 
     useEffect(() => {
@@ -307,21 +352,23 @@ export default function HistoryPage() {
 
 
 
-                                            <button
+                                           <button
 
-                                                className="
-                        flex-1
-                        bg-red-600
-                        hover:bg-red-700
-                        py-2
-                        rounded-lg
-                        "
+onClick={()=>deleteAnalysis(item.id)}
 
-                                            >
+className="
+flex-1
+bg-red-600
+hover:bg-red-700
+py-2
+rounded-lg
+"
 
-                                                Delete
+>
 
-                                            </button>
+Delete
+
+</button>
 
 
 

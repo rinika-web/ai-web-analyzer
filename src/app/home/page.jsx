@@ -194,6 +194,7 @@ export default function Dashboard() {
             text-blue-400
             hover:text-blue-300
             "
+            onClick={()=>router.push("/history")}
             >
                 View All
             </button>
