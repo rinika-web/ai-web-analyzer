@@ -127,3 +127,151 @@ Generate downloadable PDF reports containing:
 ---
 
 # 🏗️ System Architecture
+User
+|
+|
+Next.js Frontend
+|
+|
+API Routes
+|
+|----------------|
+| |
+Puppeteer Gemini AI
+|
+|
+Lighthouse
+|
+|
+PostgreSQL Database
+|
+|
+Prisma ORM
+
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- JavaScript
+
+## Backend
+
+- Next.js Route Handlers
+- Node.js
+- JWT Authentication
+
+## Database
+
+- PostgreSQL
+- Prisma ORM
+
+## Web Analysis
+
+- Puppeteer
+- Lighthouse
+- Cheerio
+
+## AI
+
+- Google Gemini API
+
+## Security
+
+- bcrypt password hashing
+- JWT protected routes
+
+---
+
+# 📂 Project Structure
+src
+│
+├── app
+│ ├── api
+│ │ ├── analyze
+│ │ ├── auth
+│ │ ├── dashboard
+│ │ ├── history
+│ │ └── report
+│ │
+│ ├── dashboard
+│ ├── history
+│ ├── report
+│ └── score
+│
+├── components
+│
+├── lib
+│ ├── prisma.js
+│ ├── auth.js
+│ ├── gemini.js
+│ └── analyzer
+│
+└── prisma
+└── schema.prisma
+
+---
+
+# ⚙️ Installation & Setup
+
+## Clone Repository
+
+```bash
+git clone YOUR_REPOSITORY_URL
+
+cd ai-website-analyzer
+```
+
+## Install Dependencies
+
+```bash
+npm install
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+DATABASE_URL="your_postgresql_database_url"
+
+JWT_SECRET="your_secret_key"
+
+GEMINI_API_KEY="your_gemini_api_key"
+```
+
+---
+
+## Setup Database
+
+Run Prisma migrations:
+
+```bash
+npx prisma migrate dev
+```
+
+Generate Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+---
+
+## Start Development Server
+
+```bash
+npm run dev
+```
+
+The application will run at:
+
+```
+http://localhost:3000
+```
