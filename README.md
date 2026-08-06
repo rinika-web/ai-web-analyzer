@@ -1,41 +1,129 @@
-<<<<<<< HEAD
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 AI Website Analyzer
 
-## Getting Started
+An AI-powered full-stack web application that analyzes websites for performance, SEO, accessibility, and best-practice issues. It uses automated browser analysis, Lighthouse metrics, and Gemini AI to generate actionable optimization recommendations.
 
-First, run the development server:
+## 🌐 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+(Add your deployed URL here)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# 📌 Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Developers and businesses often need quick insights into website quality without manually inspecting performance metrics, SEO issues, or accessibility problems.
 
-## Learn More
+AI Website Analyzer solves this by automatically crawling a website, collecting technical metrics, identifying problems, and generating AI-powered recommendations to improve website quality.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# ✨ Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔐 Authentication
 
-## Deploy on Vercel
+- User registration and login
+- JWT-based authentication
+- Password hashing using bcrypt
+- Protected API routes
+- User-specific analysis history
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-=======
-# ai-web-analyzer
-this is an advanced project
->>>>>>> f3e01f1147497edc62f1178c9a3c8c9ce4b1bbd8
+## 🔍 Website Analysis Engine
+
+The application analyzes websites using:
+
+- Puppeteer for browser automation and screenshots
+- Cheerio for HTML parsing
+- Lighthouse metrics for performance auditing
+
+It evaluates:
+
+- SEO
+- Performance
+- Accessibility
+- Best Practices
+- Core Web Vitals
+
+---
+
+## 📊 Detailed Reports
+
+Each analysis provides:
+
+- Overall website score
+- Grade and health status
+- SEO score
+- Performance score
+- Accessibility score
+- Best practices score
+
+Additional metrics:
+
+- First Contentful Paint (FCP)
+- Largest Contentful Paint (LCP)
+- Cumulative Layout Shift (CLS)
+- Time To Interactive (TTI)
+- Total Blocking Time (TBT)
+- DOM size
+- Network requests
+- Render blocking resources
+
+---
+
+## 🤖 Gemini AI Website Recommendations
+
+Integrated Google Gemini AI to transform technical analysis into developer-friendly insights.
+
+AI generates:
+
+- Website summary
+- Strength analysis
+- Priority improvements
+- Engineering recommendations
+
+Example:
+
+> "Optimize JavaScript delivery and remove render-blocking resources to improve Core Web Vitals."
+
+---
+
+## 📸 Screenshot Generation
+
+Automatically captures website screenshots during analysis using Puppeteer.
+
+---
+
+## 📁 Dashboard
+
+Users can:
+
+- View total analyzed websites
+- Track average scores
+- See recent reports
+
+---
+
+## 🕒 Analysis History
+
+Users can:
+
+- View previous reports
+- Open detailed analysis
+- Delete old reports
+
+All data is isolated per authenticated user.
+
+---
+
+## 📄 PDF Report Export
+
+Generate downloadable PDF reports containing:
+
+- Website metrics
+- Issues
+- Recommendations
+- AI insights
+
+---
+
+# 🏗️ System Architecture
