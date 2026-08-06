@@ -2,24 +2,24 @@ import { prisma } from "@/lib/prisma"
 import { verifyToken } from "@/lib/auth"
 
 
-export async function GET(req){
+export async function GET(req) {
 
-    try{
+    try {
 
         // Get JWT
 
         const authHeader =
-        req.headers.get("authorization")
+            req.headers.get("authorization")
 
 
-        if(!authHeader){
+        if (!authHeader) {
 
             return Response.json(
                 {
-                    error:"Unauthorized"
+                    error: "Unauthorized"
                 },
                 {
-                    status:401
+                    status: 401
                 }
             )
 
@@ -27,21 +27,21 @@ export async function GET(req){
 
 
         const token =
-        authHeader.split(" ")[1]
+            authHeader.split(" ")[1]
 
 
         const user =
-        verifyToken(token)
+            verifyToken(token)
 
 
-        if(!user){
+        if (!user) {
 
             return Response.json(
                 {
-                    error:"Invalid token"
+                    error: "Invalid token"
                 },
                 {
-                    status:401
+                    status: 401
                 }
             )
 
@@ -53,49 +53,49 @@ export async function GET(req){
 
 
         const analyses =
-        await prisma.analysis.findMany({
+            await prisma.analysis.findMany({
 
-            where:{
-                userId:user.userId
-            },
+                where: {
+                    userId: user.userId
+                },
 
-            orderBy:{
-                createdAt:"desc"
-            },
+                orderBy: {
+                    createdAt: "desc"
+                },
 
-            take:5
+                take: 5
 
-        })
+            })
 
 
 
         // Total count
 
         const total =
-        await prisma.analysis.count({
+            await prisma.analysis.count({
 
-            where:{
-                userId:user.userId
-            }
+                where: {
+                    userId: user.userId
+                }
 
-        })
+            })
 
 
 
         // Average score
 
         const average =
-        await prisma.analysis.aggregate({
+            await prisma.analysis.aggregate({
 
-            where:{
-                userId:user.userId
-            },
+                where: {
+                    userId: user.userId
+                },
 
-            _avg:{
-                overallScore:true
-            }
+                _avg: {
+                    overallScore: true
+                }
 
-        })
+            })
 
 
 
@@ -104,24 +104,24 @@ export async function GET(req){
             total,
 
             averageScore:
-            Math.round(
-                average._avg.overallScore || 0
-            ),
+                Math.round(
+                    average._avg.overallScore || 0
+                ),
 
-            recent:analyses
+            recent: analyses
 
         })
 
 
     }
-    catch(error){
+    catch (error) {
 
         return Response.json(
             {
-                error:error.message
+                error: error.message
             },
             {
-                status:500
+                status: 500
             }
         )
 

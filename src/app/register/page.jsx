@@ -5,38 +5,38 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 
 
-export default function RegisterPage(){
+export default function RegisterPage() {
 
     const router = useRouter()
 
 
-    const [name,setName] = useState("")
-    const [email,setEmail] = useState("")
-    const [password,setPassword] = useState("")
+    const [name, setName] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-    const [error,setError] = useState("")
-    const [message,setMessage] = useState("")
+    const [error, setError] = useState("")
+    const [message, setMessage] = useState("")
 
 
 
-    async function handleRegister(e){
+    async function handleRegister(e) {
 
         e.preventDefault()
         console.log("Register button clicked")
 
 
-        try{
+        try {
 
             const response = await fetch(
                 "/api/auth/register",
                 {
-                    method:"POST",
+                    method: "POST",
 
-                    headers:{
-                        "Content-Type":"application/json"
+                    headers: {
+                        "Content-Type": "application/json"
                     },
 
-                    body:JSON.stringify({
+                    body: JSON.stringify({
                         name,
                         email,
                         password
@@ -49,7 +49,7 @@ export default function RegisterPage(){
 
 
 
-            if(!response.ok){
+            if (!response.ok) {
 
                 throw new Error(data.message)
 
@@ -63,16 +63,16 @@ export default function RegisterPage(){
             // go to login page after 1 second
 
             localStorage.setItem(
-    "token",
-    data.token
-)
+                "token",
+                data.token
+            )
 
-router.push("/home")
+            router.push("/home")
 
 
 
         }
-        catch(err){
+        catch (err) {
 
             setError(err.message)
 
@@ -125,7 +125,7 @@ router.push("/home")
 
                     value={name}
 
-                    onChange={(e)=>setName(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
 
                     className="w-full border p-3 rounded mb-4 border-gray-900 text-gray-700"
 
@@ -141,7 +141,7 @@ router.push("/home")
 
                     value={email}
 
-                    onChange={(e)=>setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
 
                     className="w-full border p-3 rounded mb-4 border-gray-900 text-gray-700"
 
@@ -157,7 +157,7 @@ router.push("/home")
 
                     value={password}
 
-                    onChange={(e)=>setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
 
                     className="w-full border p-3 rounded mb-4 border-gray-900 text-gray-700"
 
@@ -175,16 +175,16 @@ router.push("/home")
 
                 </button>
                 <p className="text-center text-gray-700 mt-4">
-                
-                have an account?
-                
+
+                    have an account?
+
                     <Link
                         href="/login"
                         className="text-blue-500 ml-1"
                     >
                         Login
                     </Link>
-                
+
                 </p>
 
 
