@@ -278,7 +278,7 @@ export default function HistoryPage() {
                                                 onClick={() => router.push(`/history/${item.id}`)}
                                                 className="flex-1 bg-blue-600 hover:bg-blue-700 py-2 rounded-lg">
 
-                                                View
+                                                View Report
 
                                             </button>
 
@@ -289,6 +289,41 @@ export default function HistoryPage() {
 
                                                 Delete
                                             </button>
+
+                                            <button
+    onClick={async () => {
+
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+            `/api/report/${item.id}/pdf`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+
+        a.href = url;
+
+        a.download = `report-${item.id}.pdf`;
+
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+
+    }}
+
+    className="flex-1 bg-purple-600 hover:bg-purple-700 py-2 rounded-lg"
+>
+    Download PDF
+</button>
                                         </div>
 
                                     </div>

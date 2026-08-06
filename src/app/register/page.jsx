@@ -84,7 +84,7 @@ router.push("/home")
 
     return (
 
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-500">
 
 
             <form
@@ -174,13 +174,13 @@ router.push("/home")
                     Register
 
                 </button>
-                <p className="text-center mt-4">
+                <p className="text-center text-gray-700 mt-4">
                 
                 have an account?
                 
                     <Link
                         href="/login"
-                        className="text-blue-500 ml-2"
+                        className="text-blue-500 ml-1"
                     >
                         Login
                     </Link>

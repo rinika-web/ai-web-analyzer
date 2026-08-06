@@ -127,13 +127,13 @@ router.push("/home")
                     Login
 
                 </button>
-                <p className="text-center mt-4">
+                <p className="text-center mt-4 text-gray-700">
 
     Do not have an account?
 
     <Link
         href="/register"
-        className="text-blue-500 ml-2"
+        className="text-blue-500 ml-1"
     >
         Register
     </Link>
