@@ -32,6 +32,7 @@ model Analysis {
 
   grade  String
   health String
+  aiSummary Json?
 
   analyzedAt DateTime @default(now())
   createdAt  DateTime @default(now())

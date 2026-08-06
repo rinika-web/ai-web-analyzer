@@ -13,33 +13,34 @@ import { takeScreenshot } from "@/lib/analyzer/screenshot"
 import { getSummary } from "@/lib/analyzer/summary"
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
+import { generateAISummary } from "@/lib/gemini";
 
 export async function POST(req) {
     let browser
 
     try {
-const authHeader = req.headers.get("authorization");
-if (!authHeader) {
-    return Response.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-    );
-}
-if (!authHeader.startsWith("Bearer ")) {
-    return Response.json(
-        { error: "Invalid authorization format" },
-        { status: 401 }
-    );
-}
+        const authHeader = req.headers.get("authorization");
+        if (!authHeader) {
+            return Response.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+        if (!authHeader.startsWith("Bearer ")) {
+            return Response.json(
+                { error: "Invalid authorization format" },
+                { status: 401 }
+            );
+        }
 
-const token = authHeader.split(" ")[1];
-const user = verifyToken(token);
-if (!user) {
-    return Response.json(
-        { error: "Invalid token" },
-        { status: 401 }
-    );
-}
+        const token = authHeader.split(" ")[1];
+        const user = verifyToken(token);
+        if (!user) {
+            return Response.json(
+                { error: "Invalid token" },
+                { status: 401 }
+            );
+        }
         // Validate URL
         const { url } = await req.json()
         new URL(url)
@@ -75,12 +76,12 @@ if (!user) {
 
         const title = await page.title()
 
-       const screenshot = await takeScreenshot(page)
+        const screenshot = await takeScreenshot(page)
 
         const loadTime = Date.now() - start
 
         // Analyzer modules
-       
+
         const scores = getScores(lighthouse.categories)
 
         const metrics = getMetrics(lighthouse.audits)
@@ -95,80 +96,101 @@ if (!user) {
 
         const recommendations =
             getRecommendations(lighthouse.audits)
- const summary = getSummary({
-    scores,
-    issues,
-    recommendations
-})
+
+        const summary = getSummary({
+            scores,
+            issues,
+            recommendations
+        })
+
+        const aiSummary = await generateAISummary({
+
+            url,
+
+            overallScore: scores.overall.score,
+
+            seo: scores.seo.score,
+
+            performance: scores.performance.score,
+
+            accessibility: scores.accessibility.score,
+
+            bestPractices: scores.bestPractices.score,
+
+            issues,
+
+            recommendations
+
+        })
 
 
-const analysis = await prisma.analysis.create({
-    data: {
+        const analysis = await prisma.analysis.create({
+            data: {
 
-        url,
+                url,
 
-        screenshot,
+                screenshot,
 
-        overallScore: scores.overall.score,
+                overallScore: scores.overall.score,
 
-        seoScore: scores.seo.score,
+                seoScore: scores.seo.score,
 
-        performanceScore: scores.performance.score,
+                performanceScore: scores.performance.score,
 
-        accessibilityScore: scores.accessibility.score,
+                accessibilityScore: scores.accessibility.score,
 
-        bestPracticesScore: scores.bestPractices.score,
-
-
-        grade: scores.overall.grade,
-
-        health: scores.overall.health,
+                bestPracticesScore: scores.bestPractices.score,
 
 
-        userId: user.userId
+                grade: scores.overall.grade,
 
-    }
-})
+                health: scores.overall.health,
 
-await prisma.issue.createMany({
+                aiSummary,
+                userId: user.userId
 
-    data: issues.map((issue)=>({
+            }
+        })
 
-        category: issue.category,
+        await prisma.issue.createMany({
 
-        severity: issue.severity,
+            data: issues.map((issue) => ({
 
-        message: issue.message,
+                category: issue.category,
 
-        analysisId: analysis.id
+                severity: issue.severity,
 
-    }))
+                message: issue.message,
 
-})
+                analysisId: analysis.id
 
-await prisma.recommendation.createMany({
+            }))
 
-    data: recommendations.map((rec)=>({
+        })
 
-        title: rec.title,
+        await prisma.recommendation.createMany({
 
-        description: rec.description,
+            data: recommendations.map((rec) => ({
 
-        score: rec.score,
+                title: rec.title,
 
-        displayValue: rec.displayValue,
+                description: rec.description,
 
-        savingsMs: rec.savingsMs,
+                score: rec.score,
 
-        savingsBytes: rec.savingsBytes,
+                displayValue: rec.displayValue,
 
-        learnMore: rec.learnMore,
+                savingsMs: rec.savingsMs,
 
-        analysisId: analysis.id
+                savingsBytes: rec.savingsBytes,
 
-    }))
+                learnMore: rec.learnMore,
 
-})
+                analysisId: analysis.id
+
+            }))
+
+        })
 
 
         // Response
@@ -204,12 +226,13 @@ await prisma.recommendation.createMany({
             recommendations,
 
             issues,
-
-             screenshot
+aiSummary,
+            screenshot
 
         })
 
     } catch (error) {
+         console.log("ANALYZE ERROR:", error);
 
         return Response.json(
 
