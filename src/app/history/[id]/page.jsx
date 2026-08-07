@@ -227,10 +227,82 @@ export default function ReportPage(){
 
     </div>
 
+{/* AI Summary */}
+    {analysis.aiSummary && (
 
+    <div className="mt-10 bg-gradient-to-br from-purple-900 to-indigo-900 p-8 rounded-2xl">
 
+        <h2 className="text-3xl font-bold mb-6">
+            🤖 AI Expert Analysis
+        </h2>
 
+        <div className="mb-6">
 
+            <h3 className="text-xl font-semibold">
+                Summary
+            </h3>
+
+            <p className="text-gray-200 mt-2">
+                {analysis.aiSummary.summary}
+            </p>
+
+        </div>
+
+        <div className="mb-6">
+
+            <h3 className="text-xl font-semibold">
+                Strengths
+            </h3>
+
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+
+                {analysis.aiSummary.strengths.map((item, index) => (
+
+                    <li key={index}>
+                        {item}
+                    </li>
+
+                ))}
+
+            </ul>
+
+        </div>
+
+        <div className="mb-6">
+
+            <h3 className="text-xl font-semibold">
+                Highest Priority Improvements
+            </h3>
+
+            <ul className="list-disc pl-6 mt-2 space-y-2">
+
+                {analysis.aiSummary.priorities.map((item, index) => (
+
+                    <li key={index}>
+                        {item}
+                    </li>
+
+                ))}
+
+            </ul>
+
+        </div>
+
+        <div>
+
+            <h3 className="text-xl font-semibold">
+                Final Recommendation
+            </h3>
+
+            <p className="text-gray-200 mt-2">
+                {analysis.aiSummary.recommendation}
+            </p>
+
+        </div>
+
+    </div>
+
+)}
 
 </div>
 

@@ -44,7 +44,7 @@ export async function GET(req, { params }) {
 
                     issues: true,
 
-                    recommendations: true
+                    recommendations: true,
 
                 }
 
@@ -142,17 +142,19 @@ export async function DELETE(req, { params }) {
         });
 
     }
-    catch (error) {
+catch (error) {
 
-        return Response.json(
-            {
-                error: error.message
-            },
-            {
-                status: 500
-            }
-        );
+    console.error("History GET Error:", error);
 
-    }
+    return Response.json(
+        {
+            error: error.message
+        },
+        {
+            status: 500
+        }
+    );
+
+}
 
 }

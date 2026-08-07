@@ -358,10 +358,10 @@ const Score = () => {
                     />
                 </div>
 
-{
-    scores?.aiSummary && (
+                {
+                    scores?.aiSummary && (
 
-        <div className="
+                        <div className="
         mt-12
         bg-gradient-to-br
         from-zinc-700
@@ -371,118 +371,118 @@ const Score = () => {
         shadow-xl
         ">
 
-            <h2 className="text-3xl font-bold mb-8">
-                🤖 AI Expert Analysis
-            </h2>
+                            <h2 className="text-3xl font-bold mb-8">
+                                🤖 AI Expert Analysis
+                            </h2>
 
 
-            {/* Summary */}
+                            {/* Summary */}
 
-            <div className="
+                            <div className="
             bg-zinc-900
             rounded-xl
             p-5
             mb-6
             ">
 
-                <h3 className="text-xl font-semibold mb-3">
-                    Summary
-                </h3>
+                                <h3 className="text-xl font-semibold mb-3">
+                                    Summary
+                                </h3>
 
-                <p className="text-zinc-300">
-                    {scores.aiSummary.summary}
-                </p>
+                                <p className="text-zinc-300">
+                                    {scores.aiSummary.summary}
+                                </p>
 
-            </div>
-
-
-
-            {/* Strengths */}
-
-            <div className="mb-6">
-
-                <h3 className="text-xl font-semibold mb-3">
-                    🚀 Strengths
-                </h3>
+                            </div>
 
 
-                <div className="space-y-3">
 
-                    {
-                        scores.aiSummary.strengths.map(
-                            (item,index)=>(
+                            {/* Strengths */}
 
-                                <div
-                                key={index}
-                                className="
+                            <div className="mb-6">
+
+                                <h3 className="text-xl font-semibold mb-3">
+                                    🚀 Strengths
+                                </h3>
+
+
+                                <div className="space-y-1">
+
+                                    {
+                                        scores.aiSummary.strengths.map(
+                                            (item, index) => (
+
+                                                <div
+                                                    key={index}
+                                                    className="
                                 bg-zinc-900
                                 rounded-lg
                                 p-4
                                 "
-                                >
+                                                >
 
-                                    ✅ {item}
+                                                    ✅ {item}
+
+                                                </div>
+
+                                            )
+                                        )
+                                    }
 
                                 </div>
 
-                            )
-                        )
-                    }
-
-                </div>
-
-            </div>
+                            </div>
 
 
 
 
 
-            {/* Priorities */}
+                            {/* Priorities */}
 
-            <div className="mb-6">
+                            <div className="mb-6">
 
-                <h3 className="text-xl font-semibold mb-3">
-                    🔥 Priority Improvements
-                </h3>
+                                <h3 className="text-xl font-semibold mb-3">
+                                    🔥 Priority Improvements
+                                </h3>
 
 
-                <div className="space-y-3">
+                                <div className="space-y-1">
 
-                    {
-                        scores.aiSummary.priorities.map(
-                            (item,index)=>(
+                                    {
+                                        scores.aiSummary.priorities.map(
+                                            (item, index) => (
 
-                                <div
-                                key={index}
-                                className="
+                                                <div
+                                                    key={index}
+                                                    className="
                                 bg-zinc-900
                                 rounded-lg
                                 p-4
                                 "
-                                >
+                                                >
 
-                                    ⚡ {item}
+                                                    ⚡ {item}
+
+                                                </div>
+
+                                            )
+                                        )
+                                    }
+
 
                                 </div>
 
-                            )
-                        )
-                    }
 
-
-                </div>
-
-
-            </div>
+                            </div>
 
 
 
 
 
 
-            {/* Final Recommendation */}
+                            {/* Final Recommendation */}
 
-            <div className="
+                            <div className="
             bg-black
             border
             border-purple-500
@@ -491,23 +491,23 @@ const Score = () => {
             ">
 
 
-                <h3 className="text-xl font-semibold mb-3">
-                    AI Recommendation
-                </h3>
+                                <h3 className="text-xl font-semibold mb-3">
+                                    AI Recommendation
+                                </h3>
 
 
-                <p className="text-purple-200">
-                    {scores.aiSummary.recommendation}
-                </p>
+                                <p className="text-purple-200">
+                                    {scores.aiSummary.recommendation}
+                                </p>
 
 
-            </div>
+                            </div>
 
 
-        </div>
+                        </div>
 
-    )
-}
+                    )
+                }
 
             </div>
         </div>

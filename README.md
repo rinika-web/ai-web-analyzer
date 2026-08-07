@@ -136,7 +136,7 @@ Next.js Frontend
 API Routes
 |
 |----------------|
-| |
+| 
 Puppeteer Gemini AI
 |
 |
