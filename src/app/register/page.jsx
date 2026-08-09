@@ -23,7 +23,8 @@ export default function RegisterPage() {
 
         e.preventDefault()
         console.log("Register button clicked")
-
+        setError("");
+        setMessage("");
 
         try {
 
@@ -42,7 +43,7 @@ export default function RegisterPage() {
                         password
                     })
                 }
-            )
+            );
 
 
             const data = await response.json()
@@ -51,7 +52,12 @@ export default function RegisterPage() {
 
             if (!response.ok) {
 
-                throw new Error(data.message)
+                //throw new Error(data.message)
+                setError(
+                    data.error || "Registration failed"
+                );
+
+                return;
 
             }
 
@@ -74,7 +80,9 @@ export default function RegisterPage() {
         }
         catch (err) {
 
-            setError(err.message)
+            setError(
+                "Something went wrong. Please try again."
+            );
 
         }
 

@@ -1,37 +1,25 @@
 import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
 
 export default async function ReportPage({ params }) {
 
     const { id } = await params;
 
     const analysis = await prisma.analysis.findUnique({
-
         where: {
             id: Number(id),
         },
-
         include: {
             issues: true,
             recommendations: true,
         },
-
     });
 
     if (!analysis) {
-    return Response.json(
-        { error: "Report not found" },
-        { status: 404 }
-    );
-}
-
- if (!analysis) {
-        return <h1>Report not found</h1>;
+        notFound();
     }
 
-
-
     return (
-
         <div style={{ padding: "40px", fontFamily: "Arial" }}>
 
             <h1>AI Website Analyzer Report</h1>
@@ -40,15 +28,25 @@ export default async function ReportPage({ params }) {
 
             <h2>{analysis.url}</h2>
 
-            <p>Overall Score: {analysis.overallScore}</p>
+            <p>
+                Overall Score: {analysis.overallScore}
+            </p>
 
-            <p>SEO Score: {analysis.seoScore}</p>
+            <p>
+                SEO Score: {analysis.seoScore}
+            </p>
 
-            <p>Performance Score: {analysis.performanceScore}</p>
+            <p>
+                Performance Score: {analysis.performanceScore}
+            </p>
 
-            <p>Accessibility Score: {analysis.accessibilityScore}</p>
+            <p>
+                Accessibility Score: {analysis.accessibilityScore}
+            </p>
 
-            <p>Best Practices Score: {analysis.bestPracticesScore}</p>
+            <p>
+                Best Practices Score: {analysis.bestPracticesScore}
+            </p>
 
             <hr />
 
@@ -75,6 +73,5 @@ export default async function ReportPage({ params }) {
             </ul>
 
         </div>
-
     );
-}   
+}

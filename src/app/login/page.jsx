@@ -4,30 +4,36 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 
-export default function LoginPage(){
+export default function LoginPage() {
 
     const router = useRouter()
 
-    const [email,setEmail] = useState("")
-    const [password,setPassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [password, setPassword] = useState("")
 
-    const [error,setError] = useState("")
+    const [error, setError] = useState("")
 
 
-    async function handleLogin(e){
+    async function handleLogin(e) {
 
         e.preventDefault()
+        setError("");
 
-        try{
+        if (!email || !password) {
+            setError("Please enter your email and password");
+            return;
+        }
+
+        try {
 
             const response = await fetch(
                 "/api/auth/login",
                 {
-                    method:"POST",
-                    headers:{
-                        "Content-Type":"application/json"
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
                     },
-                    body:JSON.stringify({
+                    body: JSON.stringify({
                         email,
                         password
                     })
@@ -38,23 +44,26 @@ export default function LoginPage(){
             const data = await response.json()
 
 
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error(data.message)
             }
 
 
             // save JWT
 
-             localStorage.setItem(
-    "token",
-    data.token
-)
+            localStorage.setItem(
+                "token",
+                data.token
+            )
 
-router.push("/home")
+            router.push("/home")
         }
-        catch(err){
+        catch (err) {
 
-            setError(err.message)
+            //setError(err.message)
+            setError(
+                "Invalid email or password. Please try again."
+            );
 
         }
 
@@ -62,7 +71,7 @@ router.push("/home")
 
 
 
-    return(
+    return (
 
         <div className="min-h-screen flex items-center justify-center bg-gray-500">
 
@@ -94,7 +103,7 @@ router.push("/home")
 
                     value={email}
 
-                    onChange={(e)=>setEmail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
 
                     className="w-full border border-gray-900 text-gray-700 p-3 rounded mb-4"
 
@@ -110,7 +119,7 @@ router.push("/home")
 
                     value={password}
 
-                    onChange={(e)=>setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
 
                     className="w-full border border-gray-900 text-gray-700 p-3 rounded mb-4"
 
@@ -129,16 +138,16 @@ router.push("/home")
                 </button>
                 <p className="text-center mt-4 text-gray-700">
 
-    Do not have an account?
+                    Do not have an account?
 
-    <Link
-        href="/register"
-        className="text-blue-500 ml-1"
-    >
-        Register
-    </Link>
+                    <Link
+                        href="/register"
+                        className="text-blue-500 ml-1"
+                    >
+                        Register
+                    </Link>
 
-</p>
+                </p>
 
 
             </form>

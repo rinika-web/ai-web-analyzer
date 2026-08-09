@@ -33,22 +33,42 @@ export async function GET(req, { params }) {
         const analysisId = Number(id);
         console.log("Analysis ID:", analysisId);
 
-        const analysis =
-            await prisma.analysis.findUnique({
+        const analysis = await prisma.analysis.findUnique({
+            where: {
+                id: analysisId
+            },
+            include: {
+                issues: true,
+                recommendations: true,
+            }
+        });
 
-                where: {
-                    id: analysisId
+        if (!analysis) {
+            return Response.json(
+                {
+                    error: "Analysis not found"
                 },
-
-                include: {
-
-                    issues: true,
-
-                    recommendations: true,
-
+                {
+                    status: 404
                 }
+            );
+        }
 
-            })
+        // Security check
+        if (analysis.userId !== user.userId) {
+            return Response.json(
+                {
+                    error: "Forbidden"
+                },
+                {
+                    status: 403
+                }
+            );
+        }
+
+        return Response.json({
+            analysis
+        });
 
         return Response.json({
 
@@ -142,19 +162,19 @@ export async function DELETE(req, { params }) {
         });
 
     }
-catch (error) {
+    catch (error) {
 
-    console.error("History GET Error:", error);
+        console.error("History GET Error:", error);
 
-    return Response.json(
-        {
-            error: error.message
-        },
-        {
-            status: 500
-        }
-    );
+        return Response.json(
+            {
+                error: error.message
+            },
+            {
+                status: 500
+            }
+        );
 
-}
+    }
 
 }

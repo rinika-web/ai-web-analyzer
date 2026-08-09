@@ -3,74 +3,74 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 
-export async function POST(req){
+export async function POST(req) {
 
-    try{
+    try {
 
-        const {name,email,password}=await req.json();
+        const { name, email, password } = await req.json();
 
 
         const existingUser =
-        await prisma.user.findUnique({
-            where:{
-                email
-            }
-        })
+            await prisma.user.findUnique({
+                where: {
+                    email
+                }
+            })
 
 
-        if(existingUser){
+        if (existingUser) {
             return Response.json(
                 {
-                    error:"User already exists"
+                    error: "User already exists"
                 },
                 {
-                    status:400
+                    status: 400
                 }
             )
         }
 
 
         const hashedPassword =
-        await bcrypt.hash(password,10);
+            await bcrypt.hash(password, 10);
 
 
 
         const user =
-        await prisma.user.create({
+            await prisma.user.create({
 
-            data:{
-                name,
-                email,
-                password:hashedPassword
-            }
+                data: {
+                    name,
+                    email,
+                    password: hashedPassword
+                }
 
-        })
+            })
 
         const token = jwt.sign(
-{
-    userId: user.id,
-    email: user.email
-},
-process.env.JWT_SECRET,
-{
-    expiresIn: "7d"
-}
+            {
+                userId: user.id,
+                email: user.email
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "7d"
+            }
 
-)
+        )
 
 
         return Response.json({
-            message:"User created",
+            message: "User created",
             token
         })
 
 
-    }catch(error){
+    } catch (error) {
 
         return Response.json({
-            error:error.message
-        },{
-            status:500
+            error: error.message
+        }, {
+            status: 500
         })
 
     }

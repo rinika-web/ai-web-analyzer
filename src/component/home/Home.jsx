@@ -25,7 +25,9 @@ const Home = () => {
 
   return (
     <div className='grid grid-cols-12 gap-4 h-screen w-screen justify-center items-center '>
-      <div className="col-span-2"></div>
+      <div className="col-span-2">
+        
+      </div>
       <div className="col-span-8">
         <div className=' pb-10'>
           <h1 className="flex flex-col justify-center items-center font-sans lg:text-7xl text-4xl  text-white">
@@ -56,6 +58,13 @@ disabled:cursor-not-allowed'
           >
             {loading ? 'Analyzing...' : 'Analyze'}
           </button>
+                <button
+    onClick={() => router.back()}
+    className="bg-[#292929] lg:w-32 lg:h-10 w-24 h-10 text-white text-center rounded-3xl border-white/10 border-2 mt-5 ml-2 hover:bg-blue-400 disabled:opacity-50
+disabled:cursor-not-allowed"
+>
+    Back
+</button>
         </div>
       </div>
       <div className="col-span-2"></div>

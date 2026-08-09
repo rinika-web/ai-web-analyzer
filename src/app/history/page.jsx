@@ -97,6 +97,76 @@ export default function HistoryPage() {
 
     }, [])
 
+   async function downloadPDF(id) {
+
+    try {
+
+        const token =
+            localStorage.getItem("token");
+
+        const response = await fetch(
+            `/api/report/${id}/pdf`,
+            {
+                method: "GET",
+
+                headers: {
+                    Authorization:
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+        if (!response.ok) {
+
+            const data =
+                await response.json();
+
+            throw new Error(
+                data.error ||
+                "Failed to generate PDF"
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const url =
+            window.URL.createObjectURL(blob);
+
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
+
+        link.download =
+            `report-${id}.pdf`;
+
+        document.body.appendChild(link);
+
+        link.click();
+
+        link.remove();
+
+        window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+        console.error(
+            "PDF download error:",
+            error
+        );
+
+        alert(error.message);
+
+    }
+
+}
+
 
 
     if (loading) {
@@ -291,39 +361,12 @@ export default function HistoryPage() {
                                             </button>
 
                                             <button
-    onClick={async () => {
+                                                onClick={() => downloadPDF(item.id)}
 
-        const token = localStorage.getItem("token");
-
-        const response = await fetch(
-            `/api/report/${item.id}/pdf`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
-
-        const blob = await response.blob();
-
-        const url = window.URL.createObjectURL(blob);
-
-        const a = document.createElement("a");
-
-        a.href = url;
-
-        a.download = `report-${item.id}.pdf`;
-
-        a.click();
-
-        window.URL.revokeObjectURL(url);
-
-    }}
-
-    className="flex-1 bg-purple-600 hover:bg-purple-700 py-2 rounded-lg"
->
-    Download PDF
-</button>
+                                                className="flex-1 bg-purple-600 hover:bg-purple-700 py-2 rounded-lg"
+                                            >
+                                                Download PDF
+                                            </button>
                                         </div>
 
                                     </div>
