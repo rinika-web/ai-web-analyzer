@@ -8,9 +8,9 @@ The application combines **Lighthouse/PageSpeed Insights, Puppeteer, Cheerio, Po
 
 ## 🚀 Live Demo
 
-**Live:** `YOUR_DEPLOYED_URL`
+**Live:** 
 
-**Repository:** `YOUR_GITHUB_REPOSITORY_URL`
+**Repository:** 
 
 ---
 
@@ -392,7 +392,7 @@ src/
 ## 1. Clone Repository
 
 ```bash
-git clone YOUR_REPOSITORY_URL
+git clone REPOSITORY_URL
 
 cd ai-website-analyzer
 ```
