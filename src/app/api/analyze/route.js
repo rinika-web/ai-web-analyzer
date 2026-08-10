@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 import { generateAISummary } from "@/lib/gemini";
 import { analyzeSchema } from "@/lib/validations/analyze";
+import { rateLimit } from "@/lib/rateLimit";
 
 export async function POST(req) {
     let browser
@@ -66,6 +67,23 @@ const { url } = result.data;
                 { status: 401 }
             );
         }
+
+        const limit = rateLimit(user.userId);
+
+if (!limit.allowed) {
+    return Response.json(
+        {
+            error: "Too many analysis requests. Please try again later.",
+            retryAfter: limit.retryAfter
+        },
+        {
+            status: 429,
+            headers: {
+                "Retry-After": String(limit.retryAfter)
+            }
+        }
+    );
+}
         
 
         // Launch browser

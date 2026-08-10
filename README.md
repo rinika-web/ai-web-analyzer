@@ -1,152 +1,299 @@
-# 🚀 AI Website Analyzer
+# 🤖 AI Website Analyzer
 
-An AI-powered full-stack web application that analyzes websites for performance, SEO, accessibility, and best-practice issues. It uses automated browser analysis, Lighthouse metrics, and Gemini AI to generate actionable optimization recommendations.
+An AI-powered website auditing platform that analyzes websites across **performance, SEO, accessibility, and best practices**, then generates actionable recommendations using **Google Gemini AI**.
 
-## 🌐 Live Demo
-
-(Add your deployed URL here)
+The application combines **Lighthouse/PageSpeed Insights, Puppeteer, Cheerio, PostgreSQL, Prisma, JWT authentication, and Gemini AI** into a full-stack website analysis pipeline.
 
 ---
 
-# 📌 Overview
+## 🚀 Live Demo
 
-Developers and businesses often need quick insights into website quality without manually inspecting performance metrics, SEO issues, or accessibility problems.
+**Live:** `YOUR_DEPLOYED_URL`
 
-AI Website Analyzer solves this by automatically crawling a website, collecting technical metrics, identifying problems, and generating AI-powered recommendations to improve website quality.
-
----
-
-# ✨ Features
-
-## 🔐 Authentication
-
-- User registration and login
-- JWT-based authentication
-- Password hashing using bcrypt
-- Protected API routes
-- User-specific analysis history
+**Repository:** `YOUR_GITHUB_REPOSITORY_URL`
 
 ---
 
-## 🔍 Website Analysis Engine
+## 📌 Overview
 
-The application analyzes websites using:
+AI Website Analyzer allows users to enter a website URL and receive a detailed technical audit.
 
-- Puppeteer for browser automation and screenshots
-- Cheerio for HTML parsing
-- Lighthouse metrics for performance auditing
+The platform analyzes:
 
-It evaluates:
+* ⚡ Performance
+* 🔎 SEO
+* ♿ Accessibility
+* 🛡️ Best Practices
+* 📊 Core Web Vitals
+* 🔗 Links and metadata
+* 🐛 Website issues
+* 💡 Performance recommendations
+* 🤖 AI-powered analysis
 
-- SEO
-- Performance
-- Accessibility
-- Best Practices
-- Core Web Vitals
+Users can also:
 
----
-
-## 📊 Detailed Reports
-
-Each analysis provides:
-
-- Overall website score
-- Grade and health status
-- SEO score
-- Performance score
-- Accessibility score
-- Best practices score
-
-Additional metrics:
-
-- First Contentful Paint (FCP)
-- Largest Contentful Paint (LCP)
-- Cumulative Layout Shift (CLS)
-- Time To Interactive (TTI)
-- Total Blocking Time (TBT)
-- DOM size
-- Network requests
-- Render blocking resources
+* Create an account
+* Log in securely
+* View previous analyses
+* Open saved reports
+* View AI-generated insights
+* Delete analysis history
+* Download reports as PDF
 
 ---
 
-## 🤖 Gemini AI Website Recommendations
+## ✨ Features
 
-Integrated Google Gemini AI to transform technical analysis into developer-friendly insights.
+### 🔐 Authentication
 
-AI generates:
+* User registration and login
+* Password hashing with bcrypt
+* JWT-based authentication
+* Protected API routes
+* User-specific analysis history
+* Authorization checks to prevent users from accessing other users' reports
 
-- Website summary
-- Strength analysis
-- Priority improvements
-- Engineering recommendations
+### 🔍 Website Analysis
 
-Example:
+The application performs a multi-stage website audit using:
 
-> "Optimize JavaScript delivery and remove render-blocking resources to improve Core Web Vitals."
+* Puppeteer for browser automation
+* Google PageSpeed Insights / Lighthouse
+* Cheerio for HTML parsing
+* Custom analysis modules
+
+The analyzer extracts information such as:
+
+* Page title
+* SEO metadata
+* Heading structure
+* Links
+* Images
+* Missing alt attributes
+* Core Web Vitals
+* Performance metrics
+* DOM size
+* Network requests
+* Render-blocking resources
+* Unused CSS
+* Unused JavaScript
+* Image optimization opportunities
+
+### 📊 Scoring System
+
+The analyzer generates scores for:
+
+| Category       | Description                             |
+| -------------- | --------------------------------------- |
+| Performance    | Website loading and runtime performance |
+| SEO            | Search engine optimization              |
+| Accessibility  | Accessibility compliance                |
+| Best Practices | Modern web development practices        |
+| Overall        | Combined website health                 |
+
+The report also provides:
+
+* Overall grade
+* Website health status
+* Performance metrics
+* Issues
+* Recommendations
+
+### 🤖 AI Website Analysis
+
+Google Gemini analyzes the collected website data and generates:
+
+* AI summary
+* Website strengths
+* Highest-priority improvements
+* Final engineering recommendation
+
+Instead of simply displaying raw Lighthouse data, the AI layer converts technical findings into a more understandable engineering summary.
+
+### 📚 Analysis History
+
+Authenticated users can:
+
+* View previous analyses
+* Open individual reports
+* View saved AI analysis
+* Review previous issues
+* Review recommendations
+* Delete reports
+
+Each analysis is associated with the authenticated user's database ID.
+
+### 📄 PDF Reports
+
+Users can generate downloadable PDF reports containing the website's analysis results.
+
+PDF generation is handled using Puppeteer.
+
+### 🛡️ Request Validation
+
+API input is validated using **Zod** before processing.
+
+This prevents malformed requests from reaching the analysis pipeline.
+
+Example validation flow:
+
+```text
+Request
+   ↓
+Zod validation
+   ↓
+Authentication
+   ↓
+Website analysis
+```
+
+### 🚦 Rate Limiting
+
+Rate limiting is implemented to help prevent excessive requests to the analysis endpoint and protect expensive operations such as:
+
+* Puppeteer
+* PageSpeed API
+* Gemini API
+* Database operations
 
 ---
 
-## 📸 Screenshot Generation
+# 🏗️ Architecture
 
-Automatically captures website screenshots during analysis using Puppeteer.
+## Current Architecture
+
+The current application uses a synchronous analysis pipeline suitable for an MVP and low-to-moderate traffic.
+
+```text
+                    ┌──────────────┐
+                    │    Client    │
+                    │   Next.js    │
+                    └──────┬───────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │  API Server     │
+                  │  /api/analyze   │
+                  └────────┬────────┘
+                           │
+             ┌─────────────┼─────────────┐
+             │             │             │
+             ▼             ▼             ▼
+        Puppeteer     PageSpeed      Cheerio
+             │             │             │
+             └─────────────┼─────────────┘
+                           │
+                           ▼
+                    Analysis Engine
+                           │
+             ┌─────────────┼─────────────┐
+             │             │             │
+             ▼             ▼             ▼
+          Gemini        PostgreSQL    Screenshot
+             │             │
+             └─────────────┼─────────────┘
+                           ▼
+                       Response
+```
 
 ---
 
-## 📁 Dashboard
+# 🧠 Analysis Pipeline
 
-Users can:
+When a user submits a website:
 
-- View total analyzed websites
-- Track average scores
-- See recent reports
+```text
+1. User submits URL
+        ↓
+2. Zod validates request
+        ↓
+3. JWT authentication
+        ↓
+4. Puppeteer loads website
+        ↓
+5. PageSpeed/Lighthouse analysis
+        ↓
+6. HTML extracted with Cheerio
+        ↓
+7. SEO information analyzed
+        ↓
+8. Performance metrics calculated
+        ↓
+9. Issues identified
+        ↓
+10. Recommendations generated
+        ↓
+11. Gemini analyzes collected results
+        ↓
+12. Analysis stored in PostgreSQL
+        ↓
+13. Report returned to client
+```
 
 ---
 
-## 🕒 Analysis History
+# 📈 Scalability Design
 
-Users can:
+The current implementation intentionally keeps the architecture simple while documenting a path toward a distributed system.
 
-- View previous reports
-- Open detailed analysis
-- Delete old reports
+Website analysis is computationally and I/O intensive because it involves:
 
-All data is isolated per authenticated user.
+* Browser automation
+* External APIs
+* Screenshot generation
+* AI inference
+* Database operations
 
----
+At higher traffic volumes, running all of these operations synchronously inside an API request would increase latency and consume API server resources.
 
-## 📄 PDF Report Export
+## Future Asynchronous Architecture
 
-Generate downloadable PDF reports containing:
+The next scalability step would be moving the analysis pipeline into background workers.
 
-- Website metrics
-- Issues
-- Recommendations
-- AI insights
+```text
+                         Client
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │ API Server  │
+                    └──────┬──────┘
+                           │
+                    Create Analysis Job
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │ Message     │
+                    │ Queue       │
+                    └──────┬──────┘
+                           │
+                           ▼
+                    ┌─────────────┐
+                    │   Worker    │
+                    └──────┬──────┘
+                           │
+             ┌─────────────┼─────────────┐
+             ▼             ▼             ▼
+        Puppeteer      PageSpeed      Gemini
+             │             │             │
+             └─────────────┼─────────────┘
+                           │
+                           ▼
+                      PostgreSQL
+                           │
+                           ▼
+                    Analysis Complete
+```
 
----
+This architecture would allow:
 
-# 🏗️ System Architecture
-User
-|
-|
-Next.js Frontend
-|
-|
-API Routes
-|
-|----------------|
-| 
-Puppeteer Gemini AI
-|
-|
-Lighthouse
-|
-|
-PostgreSQL Database
-|
-|
-Prisma ORM
+* Horizontal worker scaling
+* Better handling of traffic spikes
+* Retryable failed jobs
+* Isolation of Puppeteer workloads
+* Lower API request latency
+* Independent scaling of API and worker services
+
+The asynchronous architecture is currently documented as a future scalability improvement rather than implemented prematurely.
 
 ---
 
@@ -154,71 +301,95 @@ Prisma ORM
 
 ## Frontend
 
-- Next.js (App Router)
-- React
-- Tailwind CSS
-- JavaScript
+* Next.js
+* React
+* Tailwind CSS
+* JavaScript
 
 ## Backend
 
-- Next.js Route Handlers
-- Node.js
-- JWT Authentication
+* Next.js API Routes
+* Node.js
+* Puppeteer
+* Cheerio
 
 ## Database
 
-- PostgreSQL
-- Prisma ORM
+* PostgreSQL
+* Prisma ORM
 
-## Web Analysis
+## Authentication & Security
 
-- Puppeteer
-- Lighthouse
-- Cheerio
+* JWT
+* bcrypt
+* Zod
+* Rate limiting
 
 ## AI
 
-- Google Gemini API
+* Google Gemini
+* `@google/genai`
 
-## Security
+## Website Auditing
 
-- bcrypt password hashing
-- JWT protected routes
+* Google PageSpeed Insights
+* Lighthouse
+
+## PDF Generation
+
+* Puppeteer
 
 ---
 
 # 📂 Project Structure
-src
+
+```text
+src/
 │
-├── app
-│ ├── api
-│ │ ├── analyze
-│ │ ├── auth
-│ │ ├── dashboard
-│ │ ├── history
-│ │ └── report
-│ │
-│ ├── dashboard
-│ ├── history
-│ ├── report
-│ └── score
+├── app/
+│   ├── api/
+│   │   ├── analyze/
+│   │   ├── auth/
+│   │   │   ├── login/
+│   │   │   └── register/
+│   │   ├── dashboard/
+│   │   ├── history/
+│   │   └── report/
+│   │
+│   ├── dashboard/
+│   ├── history/
+│   ├── login/
+│   ├── register/
+│   ├── report/
+│   └── score/
 │
-├── components
+├── lib/
+│   ├── analyzer/
+│   │   ├── issues.js
+│   │   ├── links.js
+│   │   ├── metrics.js
+│   │   ├── recommendations.js
+│   │   ├── screenshot.js
+│   │   ├── scores.js
+│   │   ├── seo.js
+│   │   └── summary.js
+│   │
+│   ├── auth.js
+│   ├── gemini.js
+│   ├── pagespeed.js
+│   ├── prisma.js
+│   └── validations/
+│       └── analyze.js
 │
-├── lib
-│ ├── prisma.js
-│ ├── auth.js
-│ ├── gemini.js
-│ └── analyzer
-│
-└── prisma
-└── schema.prisma
+└── generated/
+    └── prisma/
+```
 
 ---
 
 # ⚙️ Installation & Setup
 
-## Clone Repository
+## 1. Clone Repository
 
 ```bash
 git clone YOUR_REPOSITORY_URL
@@ -226,17 +397,15 @@ git clone YOUR_REPOSITORY_URL
 cd ai-website-analyzer
 ```
 
-## Install Dependencies
+## 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
----
+## 3. Configure Environment Variables
 
-## Environment Variables
-
-Create a `.env` file in the root directory:
+Create a `.env` file in the project root:
 
 ```env
 DATABASE_URL="your_postgresql_database_url"
@@ -246,9 +415,19 @@ JWT_SECRET="your_secret_key"
 GEMINI_API_KEY="your_gemini_api_key"
 ```
 
+### Environment Variables
+
+| Variable         | Description                    |
+| ---------------- | ------------------------------ |
+| `DATABASE_URL`   | PostgreSQL connection string   |
+| `JWT_SECRET`     | Secret used to sign JWT tokens |
+| `GEMINI_API_KEY` | Google Gemini API key          |
+
+**Never commit your `.env` file to GitHub.**
+
 ---
 
-## Setup Database
+# 🗄️ Database Setup
 
 Run Prisma migrations:
 
@@ -256,22 +435,222 @@ Run Prisma migrations:
 npx prisma migrate dev
 ```
 
-Generate Prisma Client:
+Generate the Prisma client:
 
 ```bash
 npx prisma generate
 ```
 
+Validate the Prisma schema:
+
+```bash
+npx prisma validate
+```
+
 ---
 
-## Start Development Server
+# ▶️ Run the Application
+
+Start the development server:
 
 ```bash
 npm run dev
 ```
 
-The application will run at:
+Open:
 
-```
+```text
 http://localhost:3000
 ```
+
+---
+
+# 🔒 Security Considerations
+
+The application includes several security mechanisms:
+
+### Password Security
+
+Passwords are hashed using bcrypt before being stored.
+
+```text
+Plain Password
+      ↓
+    bcrypt
+      ↓
+Hashed Password
+      ↓
+ PostgreSQL
+```
+
+### Authentication
+
+JWT tokens are used to authenticate protected API requests.
+
+```http
+Authorization: Bearer <token>
+```
+
+### Authorization
+
+Analysis records are associated with a specific user:
+
+```text
+Analysis.userId → User.id
+```
+
+API routes verify ownership before allowing users to access or delete reports.
+
+### Input Validation
+
+Zod validates incoming API data before the analysis pipeline executes.
+
+### Rate Limiting
+
+Rate limiting helps protect expensive analysis and AI operations from excessive requests.
+
+---
+
+# 🧪 Example Analysis
+
+A typical report can contain:
+
+```text
+Overall Score: 98
+Grade: A
+Health: Excellent
+
+SEO: 100
+Performance: 97
+Accessibility: 95
+Best Practices: 100
+```
+
+The AI layer then converts these results into actionable engineering recommendations such as:
+
+```text
+Summary
+Strengths
+Highest Priority Improvements
+Final Recommendation
+```
+
+---
+
+# 💡 Engineering Challenges
+
+Some of the main engineering challenges addressed in this project include:
+
+### Long-running operations
+
+Website analysis can take significantly longer than a normal API request because multiple external and computational operations are involved.
+
+### Browser automation
+
+Puppeteer requires browser resources and careful lifecycle management to avoid leaving browser processes running.
+
+### External API dependencies
+
+The analysis pipeline depends on external services such as PageSpeed and Gemini, requiring error handling and validation.
+
+### User data isolation
+
+Each analysis must be associated with the authenticated user to prevent cross-account access.
+
+### Persistent AI results
+
+AI-generated summaries are stored alongside the analysis so reports can be viewed later without repeatedly calling the Gemini API.
+
+### Scalability
+
+The current synchronous architecture is intentionally designed with a future migration path toward queue-based asynchronous workers.
+
+---
+
+# 📊 Database Model
+
+The core relationship is:
+
+```text
+User
+ │
+ └─── Analysis
+        │
+        ├── Issues
+        │
+        └── Recommendations
+```
+
+Each analysis stores:
+
+* Website URL
+* Screenshot
+* Overall score
+* SEO score
+* Performance score
+* Accessibility score
+* Best Practices score
+* Grade
+* Health
+* AI summary
+* Creation timestamp
+* User ID
+
+---
+
+# 🚀 Future Improvements
+
+Potential future improvements include:
+
+* [ ] Asynchronous analysis workers
+* [ ] Message queue
+* [ ] Redis caching
+* [ ] Distributed worker scaling
+* [ ] Job progress tracking
+* [ ] Retry and dead-letter queues
+* [ ] Analysis comparison
+* [ ] Advanced report exports
+* [ ] Automated testing
+* [ ] Observability and metrics
+* [ ] Production monitoring
+
+These features are intentionally separated from the current MVP to keep the system maintainable and avoid unnecessary infrastructure before it is required.
+
+---
+
+# 🎯 Learning Goals
+
+This project was built to gain practical experience with:
+
+* Full-stack application architecture
+* Next.js
+* REST API design
+* Authentication and authorization
+* PostgreSQL
+* Prisma ORM
+* Browser automation
+* Lighthouse/PageSpeed
+* AI API integration
+* Input validation
+* Rate limiting
+* Data persistence
+* PDF generation
+* Scalability and distributed-system design
+
+---
+
+# 👩‍💻 Author
+
+**Rinika Koley**
+
+Full-Stack Developer focused on building scalable web applications with React, Next.js, Node.js, PostgreSQL, and modern AI technologies.
+
+---
+
+# ⭐ Project Status
+
+**Status: MVP Complete**
+
+The core website analysis, authentication, persistence, AI analysis, history, reporting, validation, and security features are implemented.
+
+The architecture has also been designed with a documented path toward asynchronous, horizontally scalable processing.
