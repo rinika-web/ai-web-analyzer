@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useSearchParams } from "next/navigation"
+import { useSearchParams, useRouter } from "next/navigation"
 import ScoreCard from "./ScoreCard"
 import ScreenshotPreview from "./ScreenshotPreview"
 import IssueList from "./IssueList"
@@ -17,6 +17,8 @@ const Score = () => {
 
 
     const searchParams = useSearchParams()
+    const router = useRouter()
+
 
     const url = searchParams.get("url")
     useEffect(() => {
@@ -102,6 +104,14 @@ const Score = () => {
                     <p className="mt-3 text-zinc-400 break-all">
                         {url}
                     </p>
+
+                    <button
+                        onClick={() => router.back()}
+                        className="bg-[#292929] lg:w-32 lg:h-10 w-24 h-10 text-white text-center rounded-3xl border-white/10 border-2 mt-5 ml-2 hover:bg-blue-400 disabled:opacity-50
+disabled:cursor-not-allowed"
+                    >
+                        Back
+                    </button>
                 </div>
 
                 {/* Screenshot */}
@@ -516,5 +526,3 @@ const Score = () => {
 }
 
 export default Score
-
-

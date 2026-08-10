@@ -14,11 +14,36 @@ import { getSummary } from "@/lib/analyzer/summary"
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 import { generateAISummary } from "@/lib/gemini";
+import { analyzeSchema } from "@/lib/validations/analyze";
 
 export async function POST(req) {
     let browser
 
     try {
+
+        const body = await req.json();
+
+const result =
+    analyzeSchema.safeParse(body);
+
+if (!result.success) {
+
+    return Response.json(
+        {
+            error: result.error.issues[0].message
+        },
+        {
+            status: 400
+        }
+    );
+
+}
+
+const { url } = result.data;
+
+
+// Authentication
+
         const authHeader = req.headers.get("authorization");
         if (!authHeader) {
             return Response.json(
@@ -41,9 +66,7 @@ export async function POST(req) {
                 { status: 401 }
             );
         }
-        // Validate URL
-        const { url } = await req.json()
-        new URL(url)
+        
 
         // Launch browser
         browser = await puppeteer.launch({

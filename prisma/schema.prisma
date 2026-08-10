@@ -9,50 +9,41 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-
-  analyses Analysis[]
+  createdAt DateTime   @default(now())
+  analyses  Analysis[]
 }
 
 model Analysis {
-  id Int @id @default(autoincrement())
-
-  url        String
-  screenshot String?
-
+  id                 Int              @id @default(autoincrement())
+  url                String
+  screenshot         String?
   overallScore       Int
   seoScore           Int
   performanceScore   Int
   accessibilityScore Int
   bestPracticesScore Int
-
-  grade  String
-  health String
-  aiSummary Json?
-
-  analyzedAt DateTime @default(now())
-  createdAt  DateTime @default(now())
-
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  issues          Issue[]
-  recommendations Recommendation[]
+  grade              String
+  health             String
+  analyzedAt         DateTime         @default(now())
+  createdAt          DateTime         @default(now())
+  userId             Int
+  aiSummary          Json?
+  user               User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  issues             Issue[]
+  recommendations    Recommendation[]
 
   @@index([userId])
 }
 
 model Issue {
-  id Int @id @default(autoincrement())
-
-  category String
-  severity String
-  message  String
-
+  id         Int      @id @default(autoincrement())
+  category   String
+  severity   String
+  message    String
   analysisId Int
   analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 
@@ -60,21 +51,16 @@ model Issue {
 }
 
 model Recommendation {
-  id Int @id @default(autoincrement())
-
-  title       String
-  description String
-
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
   score        Float?
   displayValue String?
-
   savingsMs    Float?
   savingsBytes Float?
-
-  learnMore String?
-
-  analysisId Int
-  analysis   Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  learnMore    String?
+  analysisId   Int
+  analysis     Analysis @relation(fields: [analysisId], references: [id], onDelete: Cascade)
 
   @@index([analysisId])
 }

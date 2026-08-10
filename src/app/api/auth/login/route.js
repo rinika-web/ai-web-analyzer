@@ -1,93 +1,119 @@
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { loginSchema } from "@/lib/validations/auth";
+
+export async function POST(req) {
+
+    try {
+
+        const body = await req.json();
 
 
-export async function POST(req){
-
-    try{
-
-        //const {email,password}=await req.json();
-
-const body = await req.json();
-console.log(body);
-
-const { email, password } = body;
-
-        const user = await prisma.user.findUnique({
-            where:{
-                email
-            }
-        });
+        // Validate input
+        const result =
+            loginSchema.safeParse(body);
 
 
-        if(!user){
+        if (!result.success) {
 
             return Response.json(
                 {
-                    error:"User not found"
+                    error: result.error.issues[0].message
                 },
                 {
-                    status:404
+                    status: 400
                 }
-            )
+            );
 
         }
 
 
+        const { email, password } =
+            result.data;
+
+
+        // Find user
+        const user =
+            await prisma.user.findUnique({
+
+                where: {
+                    email
+                }
+
+            });
+
+
+        if (!user) {
+
+            return Response.json(
+                {
+                    error: "User not found"
+                },
+                {
+                    status: 404
+                }
+            );
+
+        }
+
+
+        // Check password
         const passwordMatch =
-        await bcrypt.compare(
-            password,
-            user.password
-        );
+            await bcrypt.compare(
+                password,
+                user.password
+            );
 
 
-        if(!passwordMatch){
+        if (!passwordMatch) {
 
             return Response.json(
                 {
-                    error:"Invalid password"
+                    error: "Invalid password"
                 },
                 {
-                    status:401
+                    status: 401
                 }
-            )
+            );
 
         }
 
 
-        const token = jwt.sign(
-            {
-                userId:user.id,
-                email:user.email
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn:"7d"
-            }
-        );
+        // Create token
+        const token =
+            jwt.sign(
+                {
+                    userId: user.id,
+                    email: user.email
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "7d"
+                }
+            );
 
 
         return Response.json({
 
-            message:"Login successful",
-
+            message: "Login successful",
             token
 
         });
 
 
-    }catch(error){
+    } catch (error) {
+
+        console.error("LOGIN ERROR:", error);
 
         return Response.json(
             {
-                error:error.message
+                error: "Something went wrong"
             },
             {
-                status:500
+                status: 500
             }
-        )
+        );
 
     }
-
 }
