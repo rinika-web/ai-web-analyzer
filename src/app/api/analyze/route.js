@@ -102,7 +102,7 @@ if (!limit.allowed) {
 
         await page.goto(url, {
             waitUntil: "domcontentloaded",
-            timeout: 25000
+            timeout: 30000
         })
 
         // Lighthouse

@@ -1,47 +1,37 @@
-import fs from "fs/promises"
-import path from "path"
+import cloudinary from "@/lib/cloudinary";
 
 export async function takeScreenshot(page) {
+    try {
+        const screenshotBuffer = await page.screenshot({
+            fullPage: false,
+            type: "png",
+        });
 
-    const publicDir = path.join(process.cwd(), "public")
+        const result = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                {
+                    folder: "ai-website-analyzer/screenshots",
+                    resource_type: "image",
+                },
+                (error, result) => {
+                    if (error) {
+                        console.error("CLOUDINARY UPLOAD ERROR:", error);
+                        reject(error);
+                    } else {
+                        resolve(result);
+                    }                         
+                }
+            );
 
-    const files = await fs.readdir(publicDir)
+            uploadStream.end(screenshotBuffer);
+        });
 
-    for (const file of files) {
+        console.log("CLOUDINARY RESULT:", result);
 
-        if (file.startsWith("website-")) {
+        return result.secure_url;
 
-            try {
-
-                await fs.unlink(
-                    path.join(publicDir, file)
-                )
-
-            } catch (error) {
-
-                console.log(
-                    "Could not delete screenshot:",
-                    file
-                )
-
-            }
-
-        }
+    } catch (error) {
+        console.error("CLOUDINARY SCREENSHOT ERROR:", error);
+        throw error;
     }
-
-
-    const fileName = `website-${Date.now()}.png`
-
-
-    await page.screenshot({
-
-        path: path.join(publicDir, fileName),
-
-        fullPage: false
-
-    })
-
-
-    return `/${fileName}`
-
 }
