@@ -8,9 +8,9 @@ The application combines **Lighthouse/PageSpeed Insights, Puppeteer, Cheerio, Po
 
 ## 🚀 Live Demo
 
-**Live:** 
+**Live: https://ai-web-analyzer-gamma.vercel.app/** 
 
-**Repository:** 
+**Repository: https://github.com/rinika-web/ai-web-analyzer** 
 
 ---
 
@@ -658,7 +658,9 @@ This project was built to gain practical experience with:
 **Rinika Koley**
 
 Full-Stack Developer focused on building scalable web applications with React, Next.js, Node.js, PostgreSQL, and modern AI technologies.
-
+**LinkedIn: https://www.linkedin.com/in/rinika-koley-802406253/**
+**website: https://www.rinikakoley.com/**
+**gmail: rinikakoleydev@gmail.com**
 ---
 
 # ⭐ Project Status
