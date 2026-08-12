@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio"
-import puppeteer from "puppeteer"
-
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import { getPageSpeed } from "@/lib/pagespeed"
 
 import { getScores } from "@/lib/analyzer/scores"
@@ -24,26 +24,26 @@ export async function POST(req) {
 
         const body = await req.json();
 
-const result =
-    analyzeSchema.safeParse(body);
+        const result =
+            analyzeSchema.safeParse(body);
 
-if (!result.success) {
+        if (!result.success) {
 
-    return Response.json(
-        {
-            error: result.error.issues[0].message
-        },
-        {
-            status: 400
+            return Response.json(
+                {
+                    error: result.error.issues[0].message
+                },
+                {
+                    status: 400
+                }
+            );
+
         }
-    );
 
-}
-
-const { url } = result.data;
+        const { url } = result.data;
 
 
-// Authentication
+        // Authentication
 
         const authHeader = req.headers.get("authorization");
         if (!authHeader) {
@@ -70,26 +70,29 @@ const { url } = result.data;
 
         const limit = rateLimit(user.userId);
 
-if (!limit.allowed) {
-    return Response.json(
-        {
-            error: "Too many analysis requests. Please try again later.",
-            retryAfter: limit.retryAfter
-        },
-        {
-            status: 429,
-            headers: {
-                "Retry-After": String(limit.retryAfter)
-            }
+        if (!limit.allowed) {
+            return Response.json(
+                {
+                    error: "Too many analysis requests. Please try again later.",
+                    retryAfter: limit.retryAfter
+                },
+                {
+                    status: 429,
+                    headers: {
+                        "Retry-After": String(limit.retryAfter)
+                    }
+                }
+            );
         }
-    );
-}
-        
+
 
         // Launch browser
         browser = await puppeteer.launch({
-            headless: true
-        })
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath(),
+            headless: true,
+        });
 
         const page = await browser.newPage()
 
@@ -267,13 +270,13 @@ if (!limit.allowed) {
             recommendations,
 
             issues,
-aiSummary,
+            aiSummary,
             screenshot
 
         })
 
     } catch (error) {
-         console.log("ANALYZE ERROR:", error);
+        console.log("ANALYZE ERROR:", error);
 
         return Response.json(
 

@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 
