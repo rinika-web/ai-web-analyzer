@@ -117,7 +117,7 @@ export default function ReportPage() {
             </p>
             <button
                 onClick={() => router.back()}
-                className="bg-[#292929] lg:w-32 lg:h-10 w-24 h-10 text-white text-center rounded-3xl border-white/10 border-2 mt-5 ml-2 hover:bg-blue-400 disabled:opacity-50
+                className="bg-[#292929] lg:w-32 lg:h-10 w-24 h-10 text-white text-center rounded-3xl border-white/10 border-2 mt-2 ml-2 hover:bg-blue-400 disabled:opacity-50
 disabled:cursor-not-allowed"
             >
                 Back
