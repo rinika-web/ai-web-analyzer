@@ -1,6 +1,5 @@
 import * as cheerio from "cheerio"
-import puppeteer from "puppeteer-core";
-import chromium from "@sparticuz/chromium";
+import { launchBrowser } from "@/lib/browser";
 import { getPageSpeed } from "@/lib/pagespeed"
 
 import { getScores } from "@/lib/analyzer/scores"
@@ -87,12 +86,7 @@ export async function POST(req) {
 
 
         // Launch browser
-        browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath(),
-            headless: true,
-        });
+        browser = await launchBrowser();
 
         const page = await browser.newPage()
 

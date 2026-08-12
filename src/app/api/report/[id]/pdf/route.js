@@ -1,4 +1,4 @@
-import puppeteer from "puppeteer-core";
+import { launchBrowser } from "@/lib/browser";
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 
@@ -401,9 +401,7 @@ export async function GET(req, { params }) {
         // 7. Puppeteer
         // =========================
 
-        browser = await puppeteer.launch({
-            headless: true
-        });
+        browser = await launchBrowser();
 
         const page = await browser.newPage();
 
