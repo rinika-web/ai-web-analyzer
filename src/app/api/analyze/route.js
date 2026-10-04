@@ -1,33 +1,41 @@
-import * as cheerio from "cheerio"
-import { launchBrowser } from "@/lib/browser";
-import { getPageSpeed } from "@/lib/pagespeed"
+import * as cheerio from "cheerio";
+import crypto from "crypto";
 
-import { getScores } from "@/lib/analyzer/scores"
-import { getMetrics } from "@/lib/analyzer/metrics"
-import { getSeoData } from "@/lib/analyzer/seo"
-import { getLinks } from "@/lib/analyzer/links"
-import { getIssues } from "@/lib/analyzer/issues"
-import { getRecommendations } from "@/lib/analyzer/recommendations"
-import { takeScreenshot } from "@/lib/analyzer/screenshot"
-import { getSummary } from "@/lib/analyzer/summary"
+import { launchBrowser } from "@/lib/browser";
+import { getPageSpeed } from "@/lib/pagespeed";
+
+import { getScores } from "@/lib/analyzer/scores";
+import { getMetrics } from "@/lib/analyzer/metrics";
+import { getSeoData } from "@/lib/analyzer/seo";
+import { getLinks } from "@/lib/analyzer/links";
+import { getIssues } from "@/lib/analyzer/issues";
+import { getRecommendations } from "@/lib/analyzer/recommendations";
+import { takeScreenshot } from "@/lib/analyzer/screenshot";
+import { getSummary } from "@/lib/analyzer/summary";
+
 import { prisma } from "@/lib/prisma";
 import { verifyToken } from "@/lib/auth";
 import { generateAISummary } from "@/lib/gemini";
 import { analyzeSchema } from "@/lib/validations/analyze";
 import { rateLimit } from "@/lib/rateLimit";
 
+import { measureStage } from "@/lib/analysisMetrics";
+
 export async function POST(req) {
-    let browser
+    let browser;
+
+    // Step 1: Baseline instrumentation
+    const requestId = crypto.randomUUID();
+    const timings = {};
+    const analysisStart = performance.now();
 
     try {
-
         const body = await req.json();
 
         const result =
             analyzeSchema.safeParse(body);
 
         if (!result.success) {
-
             return Response.json(
                 {
                     error: result.error.issues[0].message
@@ -36,30 +44,38 @@ export async function POST(req) {
                     status: 400
                 }
             );
-
         }
 
         const { url } = result.data;
 
-
         // Authentication
 
-        const authHeader = req.headers.get("authorization");
+        const authHeader =
+            req.headers.get("authorization");
+
         if (!authHeader) {
             return Response.json(
                 { error: "Unauthorized" },
                 { status: 401 }
             );
         }
+
         if (!authHeader.startsWith("Bearer ")) {
             return Response.json(
-                { error: "Invalid authorization format" },
-                { status: 401 }
+                {
+                    error: "Invalid authorization format"
+                },
+                {
+                    status: 401
+                }
             );
         }
 
-        const token = authHeader.split(" ")[1];
+        const token =
+            authHeader.split(" ")[1];
+
         const user = verifyToken(token);
+
         if (!user) {
             return Response.json(
                 { error: "Invalid token" },
@@ -67,182 +83,356 @@ export async function POST(req) {
             );
         }
 
-        const limit = rateLimit(user.userId);
+        // Rate limiting
+
+        const limit =
+            rateLimit(user.userId);
 
         if (!limit.allowed) {
             return Response.json(
                 {
-                    error: "Too many analysis requests. Please try again later.",
-                    retryAfter: limit.retryAfter
+                    error:
+                        "Too many analysis requests. Please try again later.",
+                    retryAfter:
+                        limit.retryAfter
                 },
                 {
                     status: 429,
                     headers: {
-                        "Retry-After": String(limit.retryAfter)
+                        "Retry-After":
+                            String(limit.retryAfter)
                     }
                 }
             );
         }
 
+        // --------------------------------------------------
+        // Browser launch
+        // --------------------------------------------------
 
-        // Launch browser
-        browser = await launchBrowser();
+        browser = await measureStage(
+            timings,
+            "browserLaunch",
+            () => launchBrowser()
+        );
 
-        const page = await browser.newPage()
+        const page =
+            await browser.newPage();
 
         await page.setViewport({
             width: 1920,
             height: 1080
-        })
+        });
 
-        const start = Date.now()
+        // --------------------------------------------------
+        // Website page load
+        // --------------------------------------------------
 
-        await page.goto(url, {
-            waitUntil: "domcontentloaded",
-            timeout: 30000
-        })
+        await measureStage(
+            timings,
+            "pageLoad",
+            () =>
+                page.goto(url, {
+                    waitUntil:
+                        "domcontentloaded",
+                    timeout: 30000
+                })
+        );
 
-        // Lighthouse
-        const pageSpeed = await getPageSpeed(url)
+        // --------------------------------------------------
+        // Lighthouse / PageSpeed
+        // --------------------------------------------------
 
-        const lighthouse = pageSpeed.lighthouseResult
+        const pageSpeed =
+            await measureStage(
+                timings,
+                "pageSpeed",
+                () => getPageSpeed(url)
+            );
 
-        // HTML
-        const html = await page.content()
+        const lighthouse =
+            pageSpeed.lighthouseResult;
 
-        const $ = cheerio.load(html)
+        // --------------------------------------------------
+        // HTML extraction
+        // --------------------------------------------------
 
-        const title = await page.title()
+        const html =
+            await measureStage(
+                timings,
+                "htmlExtraction",
+                () => page.content()
+            );
 
-        const screenshot = await takeScreenshot(page)
+        const $ =
+            cheerio.load(html);
 
-        const loadTime = Date.now() - start
+        const title =
+            await page.title();
 
+        // --------------------------------------------------
+        // Screenshot
+        // --------------------------------------------------
+
+        const screenshot =
+            await measureStage(
+                timings,
+                "screenshot",
+                () => takeScreenshot(page)
+            );
+
+        // --------------------------------------------------
         // Analyzer modules
+        // --------------------------------------------------
 
-        const scores = getScores(lighthouse.categories)
+        const analyzerResults =
+            await measureStage(
+                timings,
+                "analyzers",
+                async () => {
 
-        const metrics = getMetrics(lighthouse.audits)
+                    const scores =
+                        getScores(
+                            lighthouse.categories
+                        );
 
-        const seo = getSeoData($, title)
+                    const metrics =
+                        getMetrics(
+                            lighthouse.audits
+                        );
 
-        const links = getLinks($)
+                    const seo =
+                        getSeoData(
+                            $,
+                            title
+                        );
 
-        const issues = getIssues({
-            ...seo,
-        })
+                    const links =
+                        getLinks($);
 
-        const recommendations =
-            getRecommendations(lighthouse.audits)
+                    const issues =
+                        getIssues({
+                            ...seo,
+                        });
 
-        const summary = getSummary({
+                    const recommendations =
+                        getRecommendations(
+                            lighthouse.audits
+                        );
+
+                    const summary =
+                        getSummary({
+                            scores,
+                            issues,
+                            recommendations
+                        });
+
+                    return {
+                        scores,
+                        metrics,
+                        seo,
+                        links,
+                        issues,
+                        recommendations,
+                        summary
+                    };
+                }
+            );
+
+        const {
             scores,
+            metrics,
+            seo,
+            links,
             issues,
-            recommendations
-        })
+            recommendations,
+            summary
+        } = analyzerResults;
 
-        const aiSummary = await generateAISummary({
+        // --------------------------------------------------
+        // Gemini AI analysis
+        // --------------------------------------------------
 
-            url,
+        const aiSummary =
+            await measureStage(
+                timings,
+                "gemini",
+                () =>
+                    generateAISummary({
 
-            overallScore: scores.overall.score,
+                        url,
 
-            seo: scores.seo.score,
+                        overallScore:
+                            scores.overall.score,
 
-            performance: scores.performance.score,
+                        seo:
+                            scores.seo.score,
 
-            accessibility: scores.accessibility.score,
+                        performance:
+                            scores.performance.score,
 
-            bestPractices: scores.bestPractices.score,
+                        accessibility:
+                            scores.accessibility.score,
 
-            issues,
+                        bestPractices:
+                            scores.bestPractices.score,
 
-            recommendations
+                        issues,
 
-        })
+                        recommendations
 
+                    })
+            );
 
-        const analysis = await prisma.analysis.create({
-            data: {
+        // --------------------------------------------------
+        // Database
+        // --------------------------------------------------
+
+        const analysis =
+            await measureStage(
+                timings,
+                "database",
+                async () => {
+
+                    const analysis =
+                        await prisma.analysis.create({
+                            data: {
+
+                                url,
+
+                                screenshot,
+
+                                overallScore:
+                                    scores.overall.score,
+
+                                seoScore:
+                                    scores.seo.score,
+
+                                performanceScore:
+                                    scores.performance.score,
+
+                                accessibilityScore:
+                                    scores.accessibility.score,
+
+                                bestPracticesScore:
+                                    scores.bestPractices.score,
+
+                                grade:
+                                    scores.overall.grade,
+
+                                health:
+                                    scores.overall.health,
+
+                                aiSummary,
+
+                                userId:
+                                    user.userId
+
+                            }
+                        });
+
+                    await prisma.issue.createMany({
+                        data:
+                            issues.map(
+                                (issue) => ({
+                                    category:
+                                        issue.category,
+
+                                    severity:
+                                        issue.severity,
+
+                                    message:
+                                        issue.message,
+
+                                    analysisId:
+                                        analysis.id
+                                })
+                            )
+                    });
+
+                    await prisma.recommendation.createMany({
+                        data:
+                            recommendations.map(
+                                (rec) => ({
+                                    title:
+                                        rec.title,
+
+                                    description:
+                                        rec.description,
+
+                                    score:
+                                        rec.score,
+
+                                    displayValue:
+                                        rec.displayValue,
+
+                                    savingsMs:
+                                        rec.savingsMs,
+
+                                    savingsBytes:
+                                        rec.savingsBytes,
+
+                                    learnMore:
+                                        rec.learnMore,
+
+                                    analysisId:
+                                        analysis.id
+                                })
+                            )
+                    });
+
+                    return analysis;
+                }
+            );
+
+        // --------------------------------------------------
+        // Baseline measurement log
+        // --------------------------------------------------
+
+        const totalMs =
+            Math.round(
+                performance.now() -
+                analysisStart
+            );
+
+        console.log(
+            JSON.stringify({
+                event:
+                    "analysis_completed",
+
+                requestId,
+
+                userId:
+                    user.userId,
 
                 url,
 
-                screenshot,
+                timings,
 
-                overallScore: scores.overall.score,
+                totalMs
+            })
+        );
 
-                seoScore: scores.seo.score,
-
-                performanceScore: scores.performance.score,
-
-                accessibilityScore: scores.accessibility.score,
-
-                bestPracticesScore: scores.bestPractices.score,
-
-
-                grade: scores.overall.grade,
-
-                health: scores.overall.health,
-
-                aiSummary,
-                userId: user.userId
-
-            }
-        })
-
-        await prisma.issue.createMany({
-
-            data: issues.map((issue) => ({
-
-                category: issue.category,
-
-                severity: issue.severity,
-
-                message: issue.message,
-
-                analysisId: analysis.id
-
-            }))
-
-        })
-
-        await prisma.recommendation.createMany({
-
-            data: recommendations.map((rec) => ({
-
-                title: rec.title,
-
-                description: rec.description,
-
-                score: rec.score,
-
-                displayValue: rec.displayValue,
-
-                savingsMs: rec.savingsMs,
-
-                savingsBytes: rec.savingsBytes,
-
-                learnMore: rec.learnMore,
-
-                analysisId: analysis.id
-
-            }))
-
-        })
-
-
+        // --------------------------------------------------
         // Response
+        // --------------------------------------------------
+
         return Response.json({
 
-            overall: scores.overall,
+            overall:
+                scores.overall,
 
-            seo: scores.seo,
+            seo:
+                scores.seo,
 
-            performance: scores.performance,
+            performance:
+                scores.performance,
 
-            accessibility: scores.accessibility,
+            accessibility:
+                scores.accessibility,
 
-            bestPractices: scores.bestPractices,
+            bestPractices:
+                scores.bestPractices,
 
             details: {
 
@@ -250,7 +440,8 @@ export async function POST(req) {
 
                     ...seo,
 
-                    loadTime
+                    loadTime:
+                        timings.pageLoad
 
                 },
 
@@ -259,37 +450,65 @@ export async function POST(req) {
                 links
 
             },
+
             summary,
 
             recommendations,
 
             issues,
+
             aiSummary,
+
             screenshot
 
-        })
+        });
 
     } catch (error) {
-        console.log("ANALYZE ERROR:", error);
+
+        const totalMs =
+            Math.round(
+                performance.now() -
+                analysisStart
+            );
+
+        console.error(
+            JSON.stringify({
+                event:
+                    "analysis_failed",
+
+                requestId,
+
+                timings,
+
+                totalMs,
+
+                error:
+                    error instanceof Error
+                        ? error.message
+                        : String(error)
+            })
+        );
+
+        console.log(
+            "ANALYZE ERROR:",
+            error
+        );
 
         return Response.json(
-
             {
                 error:
                     error.message ||
                     "Invalid URL or failed to analyze website"
             },
-
             {
                 status: 400
             }
-
-        )
+        );
 
     } finally {
 
         if (browser) {
-            await browser.close()
+            await browser.close();
         }
 
     }
